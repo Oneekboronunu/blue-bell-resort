@@ -1,5 +1,5 @@
 [build]
-  command = "prisma generate && next build"
+  command = "next build"
   publish = ".next"
 
 [[plugins]]
@@ -7,5 +7,3 @@
 
 [build.environment]
   NODE_VERSION = "20"
-  DATABASE_URL = "file:./dev.db"
-  AUTH_SECRET = "aura_casino_master_jwt_secret_key_2026_xyz"
