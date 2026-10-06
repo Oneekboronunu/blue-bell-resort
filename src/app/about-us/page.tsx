@@ -67,8 +67,46 @@ export default function AboutUsPage() {
               <p className="text-xs text-slate-500">{isBn ? 'হাসপাতাল ও অফিসের বিশেষ বাল্ক মূল্য' : 'Bulk rates for organizations'}</p>
             </div>
           </div>
+
+          {/* Facebook Official Page Connection */}
+          <div className="bg-gradient-to-r from-blue-50/90 via-white to-blue-50/50 p-6 sm:p-8 rounded-2xl border border-blue-100 shadow-subtle flex flex-col sm:flex-row items-center justify-between gap-6">
+            <div className="flex items-center gap-4 text-left">
+              <div className="w-14 h-14 rounded-2xl bg-[#1877F2]/10 border border-[#1877F2]/20 flex items-center justify-center shrink-0">
+                <svg className="w-8 h-8 text-[#1877F2]" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
+                </svg>
+              </div>
+              <div>
+                <h3 className="text-base font-bold text-slate-900 flex items-center gap-2">
+                  <span>{isBn ? 'ফেসবুকে আমাদের সাথে যুক্ত থাকুন' : 'Join Our Facebook Community'}</span>
+                </h3>
+                <p className="text-xs text-slate-600 mt-0.5">
+                  {isBn
+                    ? 'নতুন অফার, পণ্যের আপডেট ও কাস্টমার রিভিউ পেতে আমাদের অফিশিয়াল পেজ ফলো করুন।'
+                    : 'Follow our official page @MyCarnivalBDOnline for exclusive offers, updates & support.'}
+                </p>
+                <div className="text-[11px] text-[#1877F2] font-semibold mt-1">
+                  fb.com/MyCarnivalBDOnline
+                </div>
+              </div>
+            </div>
+
+            <a
+              href="https://www.facebook.com/MyCarnivalBDOnline/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="px-6 py-3 bg-[#1877F2] hover:bg-[#166fe5] text-white text-xs font-bold rounded-xl shadow-md shadow-[#1877F2]/25 flex items-center gap-2 shrink-0 transition-all active:scale-[0.98]"
+            >
+              <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
+              </svg>
+              <span>{isBn ? 'ফেসবুক পেজ ভিজিট করুন' : 'Visit Facebook Page'}</span>
+              <ArrowRight className="w-4 h-4" />
+            </a>
+          </div>
         </div>
       </section>
     </div>
   );
 }
+
