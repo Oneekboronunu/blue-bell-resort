@@ -69,45 +69,42 @@ export default function AdminPage() {
     setLanguage,
   } = useStore();
 
-  // Authentication State
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
-  const [authChecking, setAuthChecking] = useState<boolean>(true);
+  // Authentication State - Instant synchronous initial check
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem(AUTH_STORAGE_KEY) === 'true';
+    }
+    return false;
+  });
+  const [authChecking, setAuthChecking] = useState<boolean>(false);
   const [loginEmail, setLoginEmail] = useState('');
   const [loginPassword, setLoginPassword] = useState('');
   const [loginError, setLoginError] = useState('');
   const [isSubmittingAuth, setIsSubmittingAuth] = useState(false);
 
-  // Check saved session on mount
+  // Sync on mount if needed
   useEffect(() => {
     try {
-      const savedAuth = localStorage.getItem(AUTH_STORAGE_KEY);
-      if (savedAuth === 'true') {
+      if (localStorage.getItem(AUTH_STORAGE_KEY) === 'true') {
         setIsAuthenticated(true);
       }
-    } catch (err) {
-      // Storage access check
-    } finally {
-      setAuthChecking(false);
-    }
+    } catch (err) {}
   }, []);
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    setIsSubmittingAuth(true);
     setLoginError('');
 
-    setTimeout(() => {
-      if (loginEmail.trim().toLowerCase() === ADMIN_EMAIL.toLowerCase() && loginPassword === ADMIN_PASS) {
-        setIsAuthenticated(true);
-        try {
-          localStorage.setItem(AUTH_STORAGE_KEY, 'true');
-        } catch (err) {}
-      } else {
-        setLoginError('ইমেইল বা পাসওয়ার্ড সঠিক নয়। দয়া করে আবার চেষ্টা করুন। (Invalid email or password)');
-      }
-      setIsSubmittingAuth(false);
-    }, 400);
+    if (loginEmail.trim().toLowerCase() === ADMIN_EMAIL.toLowerCase() && loginPassword === ADMIN_PASS) {
+      setIsAuthenticated(true);
+      try {
+        localStorage.setItem(AUTH_STORAGE_KEY, 'true');
+      } catch (err) {}
+    } else {
+      setLoginError('ইমেইল বা পাসওয়ার্ড সঠিক নয়। (Invalid email or password)');
+    }
   };
+
 
   const handleLogout = () => {
     try {
