@@ -4,8 +4,8 @@ export const PRODUCTS: Product[] = [
   {
     id: 'cm-prod-001',
     sku: 'AM-FLC-5L-LMN',
-    name_en: 'AMANA Floor Cleaner Lemon Fresh',
-    name_bn: 'আমনা ফ্লোর ক্লিনার লেমন ফ্রেশ',
+    name_en: 'AMANA Floor Cleaner Lemon Fresh 5L',
+    name_bn: 'আমনা ফ্লোর ক্লিনার লেমন ফ্রেশ ৫ লিটার',
     slug_en: 'amana-floor-cleaner-lemon-5l',
     slug_bn: 'amana-floor-cleaner-lemon-5l',
     brand: 'AMANA',
@@ -42,25 +42,25 @@ export const PRODUCTS: Product[] = [
       'Country of Origin': 'Bangladesh'
     },
     price: 750,
-    sale_price: 650,
+    sale_price: 550,
     currency: 'BDT',
     size: '5 L',
     unit: 'L',
     variants: [
       { id: 'v-flc-1l', size: '1 L', unit: 'L', price: 190, sale_price: 170, sku: 'AM-FLC-1L-LMN', stock: 85 },
-      { id: 'v-flc-5l', size: '5 L', unit: 'L', price: 750, sale_price: 650, sku: 'AM-FLC-5L-LMN', stock: 120 }
+      { id: 'v-flc-5l', size: '5 L', unit: 'L', price: 750, sale_price: 550, sku: 'AM-FLC-5L-LMN', stock: 120 }
     ],
     images: [
-      'https://images.unsplash.com/photo-1584813470613-5b1c1cad3d69?w=800&auto=format&fit=crop&q=80',
-      'https://images.unsplash.com/photo-1585421514738-01798e348b17?w=800&auto=format&fit=crop&q=80'
+      '/images/products/amana-floor-cleaner-5l.jpg',
+      'https://images.unsplash.com/photo-1584813470613-5b1c1cad3d69?w=800&auto=format&fit=crop&q=80'
     ],
     stock: 120,
     featured: true,
     popular: true,
     new: false,
     offer: true,
-    offer_tag_en: 'SAVE ৳100',
-    offer_tag_bn: '৳১০০ সাশ্রয়',
+    offer_tag_en: 'SAVE ৳200',
+    offer_tag_bn: '৳২০০ সাশ্রয়',
     tags: ['Floor Cleaner', '5L', 'Lemon', 'Disinfection', 'AMANA', 'Corporate Cleaning'],
     rating: 4.9,
     review_count: 86,
@@ -73,29 +73,29 @@ export const PRODUCTS: Product[] = [
   },
   {
     id: 'cm-prod-002',
-    sku: 'PW-TLC-5L-ULT',
-    name_en: 'Power Max Toilet Cleaner Ultra Clean',
-    name_bn: 'পাওয়ার ম্যাক্স টয়লেট ক্লিনার আল্ট্রা ক্লিন',
-    slug_en: 'power-max-toilet-cleaner-ultra-5l',
-    slug_bn: 'power-max-toilet-cleaner-ultra-5l',
-    brand: 'Power Max',
+    sku: 'AM-TLC-5L-ULT',
+    name_en: 'AMANA Super Plus 10X Toilet Cleaner 5L',
+    name_bn: 'আমনা সুপার প্লাস ১০এক্স টয়লেট ক্লিনার ৫ লিটার',
+    slug_en: 'amana-super-plus-toilet-cleaner-5l',
+    slug_bn: 'amana-super-plus-toilet-cleaner-5l',
+    brand: 'AMANA',
     category_id: 'cleaning-supplies',
     category_en: 'Cleaning Supplies',
     category_bn: 'ক্লিনিং সাপ্লাইজ',
     subcategory_id: 'toilet-cleaner',
     subcategory_en: 'Toilet Cleaner',
     subcategory_bn: 'টয়লেট ক্লিনার',
-    description_en: 'Power Max Toilet Cleaner features an ultra-thick descaling formula that clings to bowl surfaces, dissolving tough yellow stains, hard-water mineral buildup, and eliminating 99.9% of bacteria and unpleasant odors.',
-    description_bn: 'পাওয়ার ম্যাক্স টয়লেট ক্লিনার অত্যন্ত কার্যকর গাঢ় ফর্মুলা যা টয়লেট বোলের কঠিন হলুদ দাগ, লবণাক্ত পানির দাগ এবং দুর্গন্ধ দূর করে ৯৯.৯% জীবাণু ধ্বংস করে।',
+    description_en: 'AMANA Super Plus 10X Toilet Cleaner features an ultra-thick descaling formula that clings to bowl surfaces, dissolving tough yellow stains, hard-water mineral buildup, and eliminating 99.9% of bacteria and unpleasant odors.',
+    description_bn: 'আমনা সুপার প্লাস ১০এক্স টয়লেট ক্লিনার অত্যন্ত কার্যকর গাঢ় ফর্মুলা যা টয়লেট বোলের কঠিন হলুদ দাগ, লবণাক্ত পানির দাগ এবং দুর্গন্ধ দূর করে ৯৯.৯% জীবাণু ধ্বংস করে।',
     features_en: [
-      'Thick active gel formula clings for deep stain removal',
+      'Thick active 10X power gel formula clings for deep stain removal',
       'Removes tough limescale, rust, and yellow water stains',
       'Eliminates odor-causing bacteria instantly',
       'Angled nozzle compatibility for rim cleaning',
       'Bulk 5L container ideal for institutions & family refills'
     ],
     features_bn: [
-      'ঘন সক্রিয় জেল ফর্মুলা কঠিন দাগ দূর করে',
+      '১০ গুণ বেশি শক্তিশালী ঘন সক্রিয় জেল ফর্মুলা',
       'লবণাক্ত পানির দাগ ও মরিচা নিমিষেই পরিষ্কার করে',
       'দুর্গন্ধ সৃষ্টিকারী জীবাণু ধ্বংস করে সুবাস ছড়ায়',
       'টয়লেট কমোড ও প্যানের জন্য উপযোগী',
@@ -105,67 +105,67 @@ export const PRODUCTS: Product[] = [
     how_to_use_bn: 'কমোড বা প্যানের চারপাশে সরাসরি ঢালুন। ১৫-২০ মিনিট অপেক্ষা করুন, ব্রাশ দিয়ে আলতোভাবে ঘষে ফ্লাশ করে দিন।',
     specifications: {
       'Volume / Size': '5 Liters',
-      'Form': 'Thick Acidic Gel',
+      'Form': 'Thick Active 10X Gel',
       'Target': 'Ceramic Toilet Bowls & Urinals',
       'Germ Kill': '99.9% Certified',
       'Country of Origin': 'Bangladesh'
     },
-    price: 800,
-    sale_price: 680,
+    price: 750,
+    sale_price: 550,
     currency: 'BDT',
     size: '5 L',
     unit: 'L',
     variants: [
-      { id: 'v-tlc-750ml', size: '750 ml', unit: 'ml', price: 160, sale_price: 145, sku: 'PW-TLC-750ML', stock: 150 },
-      { id: 'v-tlc-5l', size: '5 L', unit: 'L', price: 800, sale_price: 680, sku: 'PW-TLC-5L-ULT', stock: 90 }
+      { id: 'v-tlc-750ml', size: '750 ml', unit: 'ml', price: 160, sale_price: 145, sku: 'AM-TLC-750ML', stock: 150 },
+      { id: 'v-tlc-5l', size: '5 L', unit: 'L', price: 750, sale_price: 550, sku: 'AM-TLC-5L-ULT', stock: 90 }
     ],
     images: [
-      'https://images.unsplash.com/photo-1585421514284-efb74c2b69ba?w=800&auto=format&fit=crop&q=80',
-      'https://images.unsplash.com/photo-1584813470613-5b1c1cad3d69?w=800&auto=format&fit=crop&q=80'
+      '/images/products/amana-toilet-cleaner-5l.jpg',
+      'https://images.unsplash.com/photo-1585421514284-efb74c2b69ba?w=800&auto=format&fit=crop&q=80'
     ],
     stock: 90,
     featured: true,
     popular: true,
     new: false,
     offer: true,
-    offer_tag_en: 'SAVE ৳120',
-    offer_tag_bn: '৳১২০ সাশ্রয়',
-    tags: ['Toilet Cleaner', '5L', 'Power Max', 'Stain Remover', 'Disinfectant'],
-    rating: 4.8,
+    offer_tag_en: 'SAVE ৳200',
+    offer_tag_bn: '৳২০০ সাশ্রয়',
+    tags: ['Toilet Cleaner', '5L', 'AMANA', '10X Power', 'Stain Remover', 'Disinfectant'],
+    rating: 4.85,
     review_count: 64,
-    keywords_en: ['toilet cleaner', 'toilet wash', 'harpic alternative', 'commode cleaner', '5 liter toilet cleaner', 'power max'],
-    keywords_bn: ['টয়লেট ক্লিনার', 'কমোড ক্লিনার', 'টয়লেট পরিষ্কার', 'পাওয়ার ম্যাক্স', '৫ লিটার টয়লেট ক্লিনার'],
+    keywords_en: ['toilet cleaner', 'toilet wash', 'harpic alternative', 'commode cleaner', '5 liter toilet cleaner', 'amana toilet cleaner'],
+    keywords_bn: ['টয়লেট ক্লিনার', 'কমোড ক্লিনার', 'টয়লেট পরিষ্কার', 'আমনা টয়লেট ক্লিনার', '৫ লিটার টয়লেট ক্লিনার'],
     search_aliases: [
       'toilet cleaner', 'toilet kliner', 'toilet wash', 'toiled cleaner', 'commode cleaner',
-      '5 liter toilet', '5l toilet', 'power max', 'টয়লেট ক্লিনার', 'হাড়পিক'
+      '5 liter toilet', '5l toilet', 'amana toilet', 'টয়লেট ক্লিনার', 'আমনা'
     ]
   },
   {
     id: 'cm-prod-003',
-    sku: 'ST-HW-5L-ALOE',
-    name_en: 'SoftTouch Antibacterial Liquid Hand Wash (Aloe & Tea Tree)',
-    name_bn: 'সফটটাচ অ্যান্টিব্যাকটেরিয়াল লিকুইড হ্যান্ড ওয়াশ (অ্যালোভেরা ও টি ট্রি)',
-    slug_en: 'softtouch-antibacterial-hand-wash-5l',
-    slug_bn: 'softtouch-antibacterial-hand-wash-5l',
-    brand: 'SoftTouch',
+    sku: 'AM-HW-5L-PNK',
+    name_en: 'AMANA Antibacterial Liquid Handwash 5L',
+    name_bn: 'আমনা অ্যান্টিব্যাকটেরিয়াল লিকুইড হ্যান্ডওয়াশ ৫ লিটার',
+    slug_en: 'amana-antibacterial-liquid-handwash-5l',
+    slug_bn: 'amana-antibacterial-liquid-handwash-5l',
+    brand: 'AMANA',
     category_id: 'hygiene-personal-care',
     category_en: 'Hygiene & Personal Care',
     category_bn: 'হাইজিন ও পার্সোনাল কেয়ার',
     subcategory_id: 'hand-wash',
     subcategory_en: 'Hand Wash',
     subcategory_bn: 'হ্যান্ড ওয়াশ',
-    description_en: 'SoftTouch Liquid Hand Wash is enriched with natural Aloe Vera, Vitamin E, and Tea Tree oil. Provides hospital-grade antibacterial protection while keeping hands soft, moisturized, and pleasantly scented even with frequent handwashing.',
-    description_bn: 'সফটটাচ লিকুইড হ্যান্ড ওয়াশ প্রাকৃতিক অ্যালোভেরা ও ভিটামিন ই সমৃদ্ধ। হাতকে জীবাণুমুক্ত রাখার পাশাপাশি কোমল ও মসৃণ রাখে। বারবার ব্যবহারে ত্বক শুষ্ক হয় না।',
+    description_en: 'AMANA Liquid Handwash provides complete family antibacterial protection while keeping hands moisturized, velvety soft, and lightly scented with rose botanical extracts.',
+    description_bn: 'আমনা লিকুইড হ্যান্ডওয়াশ ক্ষতিকর জীবাণু ধ্বংস করে পরিবারের সুরক্ষা নিশ্চিত করে। হাতকে রাখে কোমল, মসৃণ ও স্নিগ্ধ সুবাসিত। বারবার ব্যবহারে ত্বক শুষ্ক হয় না।',
     features_en: [
       'Eliminates 99.9% of harmful bacteria and germs',
-      'Infused with Aloe Vera & moisturizing Vitamin E',
+      'Infused with gentle moisturizers for soft hands',
       'Rich foaming lather with easy rinse-off',
-      'Pleasant calming botanical fragrance',
+      'Pleasant calming floral rose fragrance',
       'Economical 5L bulk refill for corporate dispensers and home'
     ],
     features_bn: [
       '৯৯.৯% ক্ষতিকর জীবাণু দূর করে',
-      'প্রাকৃতিক অ্যালোভেরা ও ভিটামিন ই যুক্ত ময়েশ্চারাইজিং ফর্মুলা',
+      'ময়েশ্চারাইজিং ফর্মুলা হাত রাখে কোমল ও মসৃণ',
       'ঘন ফেনা ও সহজে ধুয়ে ফেলা যায়',
       'মনোরম প্রাকৃতিক সুবাস',
       'অফিস, রেস্তোরাঁ ও পরিবারের রিফিলের জন্য সাশ্রয়ী ৫ লিটার জার'
@@ -174,57 +174,57 @@ export const PRODUCTS: Product[] = [
     how_to_use_bn: 'ভেজা হাতে সামান্য হ্যান্ড ওয়াশ নিন, অন্তত ২০ সেকেন্ড দুই হাত ভালোভাবে ঘষুন এবং পরিষ্কার পানি দিয়ে ধুয়ে ফেলুন।',
     specifications: {
       'Volume / Size': '5 Liters (5000ml)',
-      'Key Active': 'Chloroxylenol / Tea Tree Essence',
+      'Key Active': 'Antibacterial Actives + Glycerin',
       'Skin Compatibility': 'Dermatologically Tested, pH 5.5',
       'Refill Type': 'Universal Dispenser Friendly'
     },
-    price: 850,
-    sale_price: 720,
+    price: 1100,
+    sale_price: 750,
     currency: 'BDT',
     size: '5 L',
     unit: 'L',
     variants: [
-      { id: 'v-hw-250ml', size: '250 ml (Pump)', unit: 'ml', price: 110, sale_price: 95, sku: 'ST-HW-250ML', stock: 200 },
-      { id: 'v-hw-500ml', size: '500 ml (Pump)', unit: 'ml', price: 180, sale_price: 160, sku: 'ST-HW-500ML', stock: 140 },
-      { id: 'v-hw-5l', size: '5 L (Jar)', unit: 'L', price: 850, sale_price: 720, sku: 'ST-HW-5L-ALOE', stock: 110 }
+      { id: 'v-hw-250ml', size: '250 ml (Pump)', unit: 'ml', price: 110, sale_price: 95, sku: 'AM-HW-250ML', stock: 200 },
+      { id: 'v-hw-500ml', size: '500 ml (Pump)', unit: 'ml', price: 180, sale_price: 160, sku: 'AM-HW-500ML', stock: 140 },
+      { id: 'v-hw-5l', size: '5 L (Jar)', unit: 'L', price: 1100, sale_price: 750, sku: 'AM-HW-5L-PNK', stock: 110 }
     ],
     images: [
-      'https://images.unsplash.com/photo-1608248597359-0021c32fa1d7?w=800&auto=format&fit=crop&q=80',
-      'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=800&auto=format&fit=crop&q=80'
+      '/images/products/amana-handwash-5l.jpg',
+      'https://images.unsplash.com/photo-1608248597359-0021c32fa1d7?w=800&auto=format&fit=crop&q=80'
     ],
     stock: 110,
     featured: true,
     popular: true,
     new: false,
     offer: true,
-    offer_tag_en: 'BESTSELLER',
-    offer_tag_bn: 'সেরা বিক্রিত',
-    tags: ['Hand Wash', '5L', 'Antibacterial', 'Aloe Vera', 'Hygiene', 'Bulk'],
+    offer_tag_en: 'SAVE ৳350',
+    offer_tag_bn: '৳৩৫০ সাশ্রয়',
+    tags: ['Hand Wash', '5L', 'Antibacterial', 'AMANA', 'Hygiene', 'Bulk'],
     rating: 4.95,
     review_count: 112,
-    keywords_en: ['hand wash', 'hand soap', 'liquid soap', '5 liter hand wash', 'hand sanitizer', 'softtouch', 'bulk handwash'],
-    keywords_bn: ['হ্যান্ড ওয়াশ', 'হ্যান্ডওয়াশ', 'হাত ধোয়ার সাবান', 'লিকুইড সোপ', '৫ লিটার হ্যান্ডওয়াশ', 'সফটটাচ'],
+    keywords_en: ['hand wash', 'hand soap', 'liquid soap', '5 liter hand wash', 'hand sanitizer', 'amana handwash', 'bulk handwash'],
+    keywords_bn: ['হ্যান্ড ওয়াশ', 'হ্যান্ডওয়াশ', 'হাত ধোয়ার সাবান', 'লিকুইড সোপ', '৫ লিটার হ্যান্ডওয়াশ', 'আমনা হ্যান্ডওয়াশ'],
     search_aliases: [
       'hand wash', 'handwash', 'hand was', 'liquid hand soap', '5 liter hand wash',
-      '5l hand wash', 'hand soap', 'হ্যান্ড ওয়াশ', 'হ্যান্ডওয়াশ', 'হাত ধোয়ার সাবান'
+      '5l hand wash', 'hand soap', 'হ্যান্ড ওয়াশ', 'হ্যান্ডওয়াশ', 'হাত ধোয়ার সাবান', 'amana'
     ]
   },
   {
     id: 'cm-prod-004',
-    sku: 'CC-GLC-5L-SPR',
-    name_en: 'Crystal Clear Glass & Surface Cleaner Spray',
-    name_bn: 'ক্রিস্টাল ক্লিয়ার গ্লাস ও সারফেস ক্লিনার',
-    slug_en: 'crystal-clear-glass-cleaner-5l',
-    slug_bn: 'crystal-clear-glass-cleaner-5l',
-    brand: 'Crystal Clear',
+    sku: 'AM-GLC-5L-BLU',
+    name_en: 'AMANA Household & Glass Cleaner 5L',
+    name_bn: 'আমনা হাউসহোল্ড ও গ্লাস ক্লিনার ৫ লিটার',
+    slug_en: 'amana-household-glass-cleaner-5l',
+    slug_bn: 'amana-household-glass-cleaner-5l',
+    brand: 'AMANA',
     category_id: 'cleaning-supplies',
     category_en: 'Cleaning Supplies',
     category_bn: 'ক্লিনিং সাপ্লাইজ',
     subcategory_id: 'glass-cleaner',
     subcategory_en: 'Glass Cleaner',
     subcategory_bn: 'গ্লাস ক্লিনার',
-    description_en: 'Crystal Clear Glass & Surface Cleaner removes fingerprints, grease films, dust, and water spots without leaving streaks or haze. Formulated with anti-static agents to repel dust on mirrors, windows, car windshields, and chrome fixtures.',
-    description_bn: 'ক্রিস্টাল ক্লিয়ার গ্লাস ক্লিনার কাচ, আয়না, জানালার গ্লাস ও টেবিলের উপরিভাগ থেকে কোনো দাগ বা অস্পষ্টতা ছাড়াই দ্রুত ধুলা ও তৈলাক্ত দাগ পরিষ্কার করে।',
+    description_en: 'AMANA Household & Glass Cleaner removes fingerprints, grease films, dust, and water spots without leaving streaks or haze. Formulated with anti-static agents to repel dust on mirrors, windows, car windshields, and chrome fixtures.',
+    description_bn: 'আমনা গ্লাস ক্লিনার কাচ, আয়না, জানালার গ্লাস ও টেবিলের উপরিভাগ থেকে কোনো দাগ বা অস্পষ্টতা ছাড়াই দ্রুত ধুলা ও তৈলাক্ত দাগ পরিষ্কার করে শতভাগ স্বচ্ছতা এনে দেয়।',
     features_en: [
       'Instant crystal-clear transparency with zero residue',
       'Anti-fog & anti-static dust-repelling formulation',
@@ -241,37 +241,37 @@ export const PRODUCTS: Product[] = [
     how_to_use_bn: 'কাচের উপরিভাগে স্প্রে করুন এবং শুকনো পরিষ্কার মাইক্রোফাইবার কাপড় বা ওয়াইপার দিয়ে মুছে ফেলুন।',
     specifications: {
       'Volume / Size': '5 Liters',
-      'Formula': 'Streak-Free Ammonia-Optimized',
+      'Formula': 'Streak-Free Non-Ammonia',
       'Applications': 'Windows, Glass Partitions, Showcases, Windshields'
     },
-    price: 680,
-    sale_price: 580,
+    price: 750,
+    sale_price: 550,
     currency: 'BDT',
     size: '5 L',
     unit: 'L',
     variants: [
-      { id: 'v-glc-500ml', size: '500 ml (Trigger)', unit: 'ml', price: 140, sale_price: 125, sku: 'CC-GLC-500ML', stock: 160 },
-      { id: 'v-glc-5l', size: '5 L (Refill)', unit: 'L', price: 680, sale_price: 580, sku: 'CC-GLC-5L-SPR', stock: 75 }
+      { id: 'v-glc-500ml', size: '500 ml (Trigger)', unit: 'ml', price: 140, sale_price: 125, sku: 'AM-GLC-500ML', stock: 160 },
+      { id: 'v-glc-5l', size: '5 L (Refill)', unit: 'L', price: 750, sale_price: 550, sku: 'AM-GLC-5L-BLU', stock: 75 }
     ],
     images: [
-      'https://images.unsplash.com/photo-1585421514738-01798e348b17?w=800&auto=format&fit=crop&q=80',
-      'https://images.unsplash.com/photo-1584813470613-5b1c1cad3d69?w=800&auto=format&fit=crop&q=80'
+      '/images/products/amana-glass-cleaner-5l.jpg',
+      'https://images.unsplash.com/photo-1585421514738-01798e348b17?w=800&auto=format&fit=crop&q=80'
     ],
     stock: 75,
     featured: false,
     popular: true,
     new: false,
     offer: true,
-    offer_tag_en: 'SAVE ৳100',
-    offer_tag_bn: '৳১০০ সাশ্রয়',
-    tags: ['Glass Cleaner', '5L', 'Crystal Clear', 'Window Spray', 'Surface Care'],
+    offer_tag_en: 'SAVE ৳200',
+    offer_tag_bn: '৳২০০ সাশ্রয়',
+    tags: ['Glass Cleaner', '5L', 'AMANA', 'Window Spray', 'Surface Care'],
     rating: 4.85,
     review_count: 51,
-    keywords_en: ['glass cleaner', 'window cleaner', 'mr brasso', 'glass spray', '5 liter glass cleaner', 'crystal clear'],
-    keywords_bn: ['গ্লাস ক্লিনার', 'কাচ পরিষ্কার', 'গ্লাস স্প্রে', 'আয়না ক্লিনার', '৫ লিটার গ্লাস ক্লিনার'],
+    keywords_en: ['glass cleaner', 'window cleaner', 'mr brasso', 'glass spray', '5 liter glass cleaner', 'amana glass cleaner'],
+    keywords_bn: ['গ্লাস ক্লিনার', 'কাচ পরিষ্কার', 'গ্লাস স্প্রে', 'আয়না ক্লিনার', '৫ লিটার গ্লাস ক্লিনার', 'আমনা'],
     search_aliases: [
       'glass cleaner', 'glass klinar', 'glass cleanar', 'window cleaner', 'glas cleaner',
-      '5 liter glass', '5l glass', 'গ্লাস ক্লিনার', 'কাচ পরিষ্কার স্প্রে'
+      '5 liter glass', '5l glass', 'গ্লাস ক্লিনার', 'কাচ পরিষ্কার স্প্রে', 'amana'
     ]
   },
   {
@@ -336,20 +336,20 @@ export const PRODUCTS: Product[] = [
   },
   {
     id: 'cm-prod-006',
-    sku: 'DW-PRO-5L-LMN',
-    name_en: 'DishWash Pro Lemon Degreasing Liquid 5L',
-    name_bn: 'ডিশওয়াশ প্রো লেমন ডিটারজেন্ট লিকুইড ৫ লিটার',
-    slug_en: 'dishwash-pro-lemon-liquid-5l',
-    slug_bn: 'dishwash-pro-lemon-liquid-5l',
-    brand: 'DishWash Pro',
+    sku: 'AM-DW-5L-LMN',
+    name_en: 'AMANA Dish Washing Liquid Lemon 5L',
+    name_bn: 'আমনা ডিশ ওয়াশিং লিকুইড লেমন ৫ লিটার',
+    slug_en: 'amana-dish-washing-liquid-lemon-5l',
+    slug_bn: 'amana-dish-washing-liquid-lemon-5l',
+    brand: 'AMANA',
     category_id: 'cleaning-supplies',
     category_en: 'Cleaning Supplies',
     category_bn: 'ক্লিনিং সাপ্লাইজ',
     subcategory_id: 'dish-wash',
     subcategory_en: 'Dish Wash',
     subcategory_bn: 'ডিশ ওয়াশ',
-    description_en: 'Commercial-grade dishwashing liquid with turbo grease-cutting enzymes. Easily cuts through heavy burnt oils, curry stains, and food odours on stainless steel, melamine, glassware, and cookware with minimal scrubbing.',
-    description_bn: 'রেস্তোরাঁ ও গৃহস্থালীর জন্য বিশেষ ঘন ডিশওয়াশ লিকুইড। কঠিন তেল-চর্বি ও পোড়া দাগ নিমিষেই দূর করে এবং বাসনকোসনে চমৎকার লেবুর ঘ্রাণ রাখে।',
+    description_en: 'AMANA Commercial-grade dishwashing liquid with turbo grease-cutting enzymes. Easily cuts through heavy burnt oils, curry stains, and food odours on stainless steel, melamine, glassware, and cookware with minimal scrubbing.',
+    description_bn: 'আমনা ডিশ ওয়াশিং লিকুইড রেস্তোরাঁ ও গৃহস্থালীর জন্য বিশেষ ঘন লিকুইড। কঠিন তেল-চর্বি ও পোড়া দাগ নিমিষেই দূর করে এবং বাসনকোসনে চমৎকার লেবুর ঘ্রাণ রাখে।',
     features_en: [
       'Ultra-concentrated grease-cutting formula',
       'Gentle on chef & home cook hands',
@@ -367,16 +367,17 @@ export const PRODUCTS: Product[] = [
       'Concentration': 'Super Concentrated (Dilution 1:10)',
       'Active Ingredients': 'Anionic Surfactants, Real Lemon Extract'
     },
-    price: 720,
-    sale_price: 620,
+    price: 750,
+    sale_price: 550,
     currency: 'BDT',
     size: '5 L',
     unit: 'L',
     variants: [
-      { id: 'v-dw-500ml', size: '500 ml', unit: 'ml', price: 130, sale_price: 115, sku: 'DW-PRO-500ML', stock: 130 },
-      { id: 'v-dw-5l', size: '5 L', unit: 'L', price: 720, sale_price: 620, sku: 'DW-PRO-5L-LMN', stock: 80 }
+      { id: 'v-dw-500ml', size: '500 ml', unit: 'ml', price: 130, sale_price: 115, sku: 'AM-DW-500ML', stock: 130 },
+      { id: 'v-dw-5l', size: '5 L', unit: 'L', price: 750, sale_price: 550, sku: 'AM-DW-5L-LMN', stock: 80 }
     ],
     images: [
+      '/images/products/amana-dishwash-5l.jpg',
       'https://images.unsplash.com/photo-1584813470613-5b1c1cad3d69?w=800&auto=format&fit=crop&q=80'
     ],
     stock: 80,
@@ -384,16 +385,16 @@ export const PRODUCTS: Product[] = [
     popular: true,
     new: false,
     offer: true,
-    offer_tag_en: 'SAVE ৳100',
-    offer_tag_bn: '৳১০০ সাশ্রয়',
-    tags: ['Dishwash', '5L', 'Kitchen Cleaning', 'Restaurant Supplies', 'Lemon'],
-    rating: 4.75,
+    offer_tag_en: 'SAVE ৳200',
+    offer_tag_bn: '৳২০০ সাশ্রয়',
+    tags: ['Dishwash', '5L', 'AMANA', 'Kitchen Cleaning', 'Restaurant Supplies', 'Lemon'],
+    rating: 4.85,
     review_count: 42,
-    keywords_en: ['dish wash', 'dish liquid', 'dish soap', 'kitchen cleaner', '5 liter dishwash', 'vim alternative'],
-    keywords_bn: ['ডিশ ওয়াশ', 'বাসন মাজার লিকুইড', 'ডিশওয়াশ', 'থালা বাসন ধোয়ার লিকুইড', '৫ লিটার ডিশওয়াশ'],
+    keywords_en: ['dish wash', 'dish liquid', 'dish soap', 'kitchen cleaner', '5 liter dishwash', 'amana dishwash'],
+    keywords_bn: ['ডিশ ওয়াশ', 'বাসন মাজার লিকুইড', 'ডিশওয়াশ', 'থালা বাসন ধোয়ার লিকুইড', '৫ লিটার ডিশওয়াশ', 'আমনা'],
     search_aliases: [
       'dish wash', 'dishwash', 'dish liquid', 'dish cleaner', 'dishsoap',
-      '5 liter dish wash', '5l dishwash', 'ডিশ ওয়াশ', 'ডিশওয়াশ'
+      '5 liter dish wash', '5l dishwash', 'ডিশ ওয়াশ', 'ডিশওয়াশ', 'amana'
     ]
   },
   {

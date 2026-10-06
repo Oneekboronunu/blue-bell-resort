@@ -352,7 +352,7 @@ export const useStore = create<StoreState>()(
       },
     }),
     {
-      name: 'carnival-mart-storage-v2',
+      name: 'carnival-mart-storage-v3',
       storage: createJSONStorage(() => localStorage),
       partialize: (state) => ({
         language: state.language,
