@@ -24,7 +24,7 @@ function ShopContent() {
   const initialCategory = searchParams.get('category') || 'all';
   const initialQuery = searchParams.get('q') || '';
 
-  const { language, t } = useStore();
+  const { language, t, products } = useStore();
   const isBn = language === 'bn';
 
   // Filters State
@@ -38,13 +38,13 @@ function ShopContent() {
   const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
 
   // Available brands & sizes
-  const brands = useMemo(() => Array.from(new Set(PRODUCTS.map((p) => p.brand))), []);
-  const sizes = useMemo(() => Array.from(new Set(PRODUCTS.map((p) => p.size))), []);
+  const brands = useMemo(() => Array.from(new Set(products.map((p) => p.brand))), [products]);
+  const sizes = useMemo(() => Array.from(new Set(products.map((p) => p.size))), [products]);
 
   // Filter & Search Logic
   const filteredProducts = useMemo(() => {
     // 1. Search Query parsing
-    let list = initialQuery ? searchProducts(initialQuery, PRODUCTS).map((res) => res.product) : [...PRODUCTS];
+    let list = initialQuery ? searchProducts(initialQuery, products).map((res) => res.product) : [...products];
 
     // 2. Category filter
     if (selectedCategory !== 'all') {

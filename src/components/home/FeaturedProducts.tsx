@@ -8,7 +8,7 @@ import { PRODUCTS } from '@/data/products';
 import { useStore } from '@/lib/store/useStore';
 
 export default function FeaturedProducts() {
-  const { language, t } = useStore();
+  const { language, t, products } = useStore();
   const [activeTab, setActiveTab] = useState('all');
 
   const isBn = language === 'bn';
@@ -21,8 +21,8 @@ export default function FeaturedProducts() {
   ];
 
   const filteredProducts = activeTab === 'all'
-    ? PRODUCTS
-    : PRODUCTS.filter((p) => p.category_id === activeTab);
+    ? products
+    : products.filter((p) => p.category_id === activeTab);
 
   return (
     <section className="py-12 bg-slate-50/60 border-y border-slate-100">

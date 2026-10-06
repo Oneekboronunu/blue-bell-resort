@@ -128,3 +128,17 @@ export interface FilterState {
   searchQuery: string;
   sortBy: 'recommended' | 'price-low' | 'price-high' | 'newest' | 'popular' | 'discount';
 }
+
+export interface CorporateQuote {
+  id: string;
+  name: string;
+  company: string;
+  phone: string;
+  email?: string;
+  sector: string;
+  frequency?: string;
+  requirements: string;
+  date: string;
+  status: 'new' | 'contacted' | 'quoted' | 'closed';
+}
+

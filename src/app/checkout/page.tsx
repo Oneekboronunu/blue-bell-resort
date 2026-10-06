@@ -74,16 +74,61 @@ export default function CheckoutPage() {
     }
 
     setIsSubmitting(true);
-    const orderId = `CM-${Math.floor(100000 + Math.random() * 900000)}`;
+    const orderNumber = `CM-${Math.floor(100000 + Math.random() * 900000)}`;
+
+    const orderItems = cart.map((item) => {
+      const price = item.selectedVariant
+        ? (item.selectedVariant.sale_price ?? item.selectedVariant.price)
+        : (item.product.sale_price ?? item.product.price);
+      const size = item.selectedVariant ? item.selectedVariant.size : item.product.size;
+      return {
+        productId: item.product.id,
+        name: `${item.product.name_en} (${size})`,
+        size,
+        price,
+        quantity: item.quantity,
+        total: price * item.quantity,
+        image: item.product.images[0],
+      };
+    });
+
+    const newOrder = {
+      id: `ord-${Date.now()}`,
+      orderNumber,
+      date: new Date().toLocaleString(),
+      customerName: formData.fullName,
+      phone: formData.phone,
+      email: formData.email || undefined,
+      address: formData.area,
+      district: formData.district,
+      area: formData.area,
+      notes: formData.orderNotes || undefined,
+      items: orderItems,
+      subtotal,
+      deliveryFee,
+      discount: 0,
+      total: grandTotal,
+      paymentMethod: formData.paymentMethod,
+      status: 'placed' as const,
+      timeline: [
+        { status: 'placed', title_en: 'Order Placed', title_bn: 'অর্ডার গ্রহণ', time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }), completed: true, current: true },
+        { status: 'confirmed', title_en: 'Confirmed', title_bn: 'নিশ্চিতকরণ', time: 'Pending', completed: false },
+        { status: 'processing', title_en: 'Packing & QC', title_bn: 'প্যাকিং সম্পন্ন', time: 'Pending', completed: false },
+        { status: 'shipped', title_en: 'Shipped', title_bn: 'কুরিয়ারে হস্তান্তর', time: 'Pending', completed: false },
+        { status: 'out_for_delivery', title_en: 'Out for Delivery', title_bn: 'ডেলিভারির পথে', time: 'Pending', completed: false },
+        { status: 'delivered', title_en: 'Delivered', title_bn: 'ডেলিভারি সম্পন্ন', time: 'Pending', completed: false },
+      ],
+    };
 
     setTimeout(() => {
+      useStore.getState().addOrder(newOrder);
       setOrderSuccessData({
-        orderId,
+        orderId: orderNumber,
         total: grandTotal,
       });
       clearCart();
       setIsSubmitting(false);
-    }, 800);
+    }, 600);
   };
 
   // Order Success Screen

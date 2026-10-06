@@ -28,15 +28,15 @@ export default function ProductDetailPage() {
   const router = useRouter();
   const slug = params?.slug as string;
 
-  const { language, t, addToCart, toggleWishlist, isInWishlist } = useStore();
+  const { language, t, products, addToCart, toggleWishlist, isInWishlist } = useStore();
   const isBn = language === 'bn';
 
   // Find product by slug (English or Bengali slug)
   const product = useMemo(() => {
-    return PRODUCTS.find(
+    return products.find(
       (p) => p.slug_en === slug || p.slug_bn === slug || p.id === slug
-    ) || PRODUCTS[0];
-  }, [slug]);
+    ) || products[0] || PRODUCTS[0];
+  }, [slug, products]);
 
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [selectedVariant, setSelectedVariant] = useState<ProductVariant | undefined>(
@@ -60,10 +60,10 @@ export default function ProductDetailPage() {
 
   // Related products from same category
   const relatedProducts = useMemo(() => {
-    return PRODUCTS.filter(
+    return products.filter(
       (p) => p.id !== product.id && (p.category_id === product.category_id || p.brand === product.brand)
     ).slice(0, 4);
-  }, [product]);
+  }, [product, products]);
 
   const handleAddToCart = () => {
     addToCart(product, quantity, selectedVariant);

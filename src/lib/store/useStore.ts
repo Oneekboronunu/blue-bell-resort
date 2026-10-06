@@ -1,13 +1,37 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
-import { CartItem, Product, Language, ProductVariant } from '@/types';
+import { CartItem, Product, Language, ProductVariant, Order, CorporateQuote } from '@/types';
 import { translations } from '@/lib/i18n/translations';
+import { PRODUCTS } from '@/data/products';
+import { INITIAL_ORDERS, INITIAL_CORPORATE_QUOTES } from '@/data/initialStoreData';
 
 interface StoreState {
   // Language
   language: Language;
   setLanguage: (lang: Language) => void;
   t: typeof translations.en;
+
+  // Products Management
+  products: Product[];
+  addProduct: (product: Product) => void;
+  updateProduct: (id: string, updated: Partial<Product>) => void;
+  deleteProduct: (id: string) => void;
+  updateStock: (id: string, newStock: number) => void;
+  resetDefaultProducts: () => void;
+
+  // Orders Management & Sales Tracking
+  orders: Order[];
+  addOrder: (order: Order) => void;
+  updateOrderStatus: (orderId: string, status: Order['status']) => void;
+  deleteOrder: (orderId: string) => void;
+  getTotalRevenue: () => number;
+  getOrdersCountByStatus: (status: Order['status']) => number;
+
+  // Corporate Leads
+  corporateQuotes: CorporateQuote[];
+  addCorporateQuote: (quote: Omit<CorporateQuote, 'id' | 'date' | 'status'>) => void;
+  updateQuoteStatus: (id: string, status: CorporateQuote['status']) => void;
+  deleteCorporateQuote: (id: string) => void;
 
   // Cart
   cart: CartItem[];
@@ -23,7 +47,7 @@ interface StoreState {
   getCartTotal: () => number;
 
   // Wishlist
-  wishlist: string[]; // Product IDs
+  wishlist: string[];
   toggleWishlist: (productId: string) => void;
   isInWishlist: (productId: string) => boolean;
 
@@ -35,6 +59,7 @@ interface StoreState {
   recentSearches: string[];
   addRecentSearch: (query: string) => void;
   clearRecentSearches: () => void;
+  searchAnalytics: { query: string; count: number; timestamp: number }[];
   failedSearches: { query: string; timestamp: number }[];
   logFailedSearch: (query: string) => void;
 
@@ -46,7 +71,7 @@ interface StoreState {
 export const useStore = create<StoreState>()(
   persist(
     (set, get) => ({
-      // Language defaults to Bengali as per primary local target, switchable anytime
+      // Language
       language: 'bn',
       t: translations.bn,
       setLanguage: (lang: Language) => {
@@ -54,6 +79,111 @@ export const useStore = create<StoreState>()(
           language: lang,
           t: translations[lang] || translations.bn,
         });
+      },
+
+      // Products Management
+      products: PRODUCTS,
+      addProduct: (product: Product) => {
+        set((state) => ({
+          products: [product, ...state.products],
+        }));
+        get().showToast(
+          get().language === 'bn'
+            ? `"${product.name_bn}" পণ্যটি সফলভাবে যুক্ত হয়েছে!`
+            : `Product "${product.name_en}" added successfully!`
+        );
+      },
+      updateProduct: (id: string, updated: Partial<Product>) => {
+        set((state) => ({
+          products: state.products.map((p) => (p.id === id ? { ...p, ...updated, updated_at: new Date().toISOString() } : p)),
+        }));
+        get().showToast(
+          get().language === 'bn' ? 'পণ্য আপডেট সম্পন্ন হয়েছে!' : 'Product updated successfully!'
+        );
+      },
+      deleteProduct: (id: string) => {
+        set((state) => ({
+          products: state.products.filter((p) => p.id !== id),
+        }));
+        get().showToast(
+          get().language === 'bn' ? 'পণ্যটি তালিকা থেকে মুছে ফেলা হয়েছে' : 'Product deleted successfully'
+        );
+      },
+      updateStock: (id: string, newStock: number) => {
+        set((state) => ({
+          products: state.products.map((p) => (p.id === id ? { ...p, stock: Math.max(0, newStock) } : p)),
+        }));
+      },
+      resetDefaultProducts: () => {
+        set({ products: PRODUCTS });
+        get().showToast(
+          get().language === 'bn' ? 'ডিফল্ট পণ্য তালিকা রিস্টোর করা হয়েছে' : 'Default product catalog restored'
+        );
+      },
+
+      // Orders Management
+      orders: INITIAL_ORDERS,
+      addOrder: (order: Order) => {
+        set((state) => ({
+          orders: [order, ...state.orders],
+        }));
+      },
+      updateOrderStatus: (orderId: string, status: Order['status']) => {
+        const timeNow = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        set((state) => ({
+          orders: state.orders.map((ord) => {
+            if (ord.id === orderId || ord.orderNumber === orderId) {
+              const updatedTimeline = ord.timeline.map((step) => {
+                if (step.status === status) {
+                  return { ...step, completed: true, current: true, time: timeNow };
+                }
+                return { ...step, current: false };
+              });
+              return { ...ord, status, timeline: updatedTimeline };
+            }
+            return ord;
+          }),
+        }));
+        get().showToast(
+          get().language === 'bn'
+            ? `অর্ডার #${orderId} এর স্ট্যাটাস আপডেট হয়েছে: ${status}`
+            : `Order #${orderId} status updated to: ${status}`
+        );
+      },
+      deleteOrder: (orderId: string) => {
+        set((state) => ({
+          orders: state.orders.filter((o) => o.id !== orderId && o.orderNumber !== orderId),
+        }));
+      },
+      getTotalRevenue: () => {
+        return get().orders.reduce((sum, ord) => sum + ord.total, 0);
+      },
+      getOrdersCountByStatus: (status: Order['status']) => {
+        return get().orders.filter((o) => o.status === status).length;
+      },
+
+      // Corporate Quotes
+      corporateQuotes: INITIAL_CORPORATE_QUOTES,
+      addCorporateQuote: (data) => {
+        const newQuote: CorporateQuote = {
+          ...data,
+          id: `cq-${Date.now()}`,
+          date: new Date().toISOString().split('T')[0],
+          status: 'new',
+        };
+        set((state) => ({
+          corporateQuotes: [newQuote, ...state.corporateQuotes],
+        }));
+      },
+      updateQuoteStatus: (id: string, status: CorporateQuote['status']) => {
+        set((state) => ({
+          corporateQuotes: state.corporateQuotes.map((q) => (q.id === id ? { ...q, status } : q)),
+        }));
+      },
+      deleteCorporateQuote: (id: string) => {
+        set((state) => ({
+          corporateQuotes: state.corporateQuotes.filter((q) => q.id !== id),
+        }));
       },
 
       // Cart
@@ -163,22 +293,49 @@ export const useStore = create<StoreState>()(
 
       // Search History & Analytics
       recentSearches: ['Floor Cleaner', '5L Hand Wash', 'Power Max', 'Jasmine Freshener'],
+      searchAnalytics: [
+        { query: '5 liter floor cleaner', count: 18, timestamp: Date.now() - 3600000 },
+        { query: 'hospital disinfectant', count: 14, timestamp: Date.now() - 7200000 },
+        { query: 'softtouch hand wash 5L', count: 12, timestamp: Date.now() - 10800000 },
+        { query: 'dishwash liquid 5L', count: 9, timestamp: Date.now() - 14400000 },
+        { query: 'automatic air freshener', count: 7, timestamp: Date.now() - 18000000 },
+      ],
       addRecentSearch: (query: string) => {
         if (!query.trim()) return;
-        const current = get().recentSearches.filter(
-          (q) => q.toLowerCase() !== query.toLowerCase()
+        const trimmed = query.trim();
+        const currentRecent = get().recentSearches.filter(
+          (q) => q.toLowerCase() !== trimmed.toLowerCase()
         );
-        set({ recentSearches: [query, ...current].slice(0, 8) });
+        const currentAnalytics = [...get().searchAnalytics];
+        const existingIdx = currentAnalytics.findIndex(
+          (a) => a.query.toLowerCase() === trimmed.toLowerCase()
+        );
+
+        if (existingIdx > -1) {
+          currentAnalytics[existingIdx].count += 1;
+          currentAnalytics[existingIdx].timestamp = Date.now();
+        } else {
+          currentAnalytics.unshift({ query: trimmed, count: 1, timestamp: Date.now() });
+        }
+
+        set({
+          recentSearches: [trimmed, ...currentRecent].slice(0, 8),
+          searchAnalytics: currentAnalytics.slice(0, 30),
+        });
       },
       clearRecentSearches: () => set({ recentSearches: [] }),
 
-      failedSearches: [],
+      failedSearches: [
+        { query: '20 liter floor cleaner', timestamp: Date.now() - 86400000 },
+        { query: 'toilet paper rolls bulk', timestamp: Date.now() - 172800000 },
+        { query: 'automatic touchless sanitizer dispenser', timestamp: Date.now() - 259200000 },
+      ],
       logFailedSearch: (query: string) => {
         if (!query.trim()) return;
         set((state) => ({
           failedSearches: [
-            ...state.failedSearches.slice(-50),
             { query: query.trim(), timestamp: Date.now() },
+            ...state.failedSearches.slice(0, 49),
           ],
         }));
       },
@@ -195,13 +352,17 @@ export const useStore = create<StoreState>()(
       },
     }),
     {
-      name: 'carnival-mart-storage',
+      name: 'carnival-mart-storage-v2',
       storage: createJSONStorage(() => localStorage),
       partialize: (state) => ({
         language: state.language,
+        products: state.products,
+        orders: state.orders,
+        corporateQuotes: state.corporateQuotes,
         cart: state.cart,
         wishlist: state.wishlist,
         recentSearches: state.recentSearches,
+        searchAnalytics: state.searchAnalytics,
         failedSearches: state.failedSearches,
       }),
     }
