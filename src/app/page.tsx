@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useStore } from '@/lib/store/useStore';
 import { useTranslation } from '@/lib/i18n/translations';
 import { formatPrice } from '@/lib/formatters';
@@ -45,6 +46,8 @@ export default function HomePage() {
   // Testimonials Carousel state
   const [reviewRatingFilter, setReviewRatingFilter] = useState('all');
   const [reviewCarouselIndex, setReviewCarouselIndex] = useState(0);
+  const [reviewDirection, setReviewDirection] = useState(1);
+  const [isReviewPaused, setIsReviewPaused] = useState(false);
 
   const filteredTestimonials = testimonials.filter((t) => {
     if (reviewRatingFilter === 'all') return true;
@@ -53,19 +56,20 @@ export default function HomePage() {
 
   const itemsPerSlide = 3;
   const totalReviewSlides = Math.max(1, Math.ceil(filteredTestimonials.length / itemsPerSlide));
-  const displayedReviews = filteredTestimonials.slice(
+  const currentReviewSlideItems = filteredTestimonials.slice(
     (reviewCarouselIndex % totalReviewSlides) * itemsPerSlide,
     (reviewCarouselIndex % totalReviewSlides) * itemsPerSlide + itemsPerSlide
   );
 
-  // Auto slide reviews
+  // Auto slide reviews with smooth gliding transition
   useEffect(() => {
-    if (totalReviewSlides <= 1) return;
+    if (totalReviewSlides <= 1 || isReviewPaused) return;
     const interval = setInterval(() => {
+      setReviewDirection(1);
       setReviewCarouselIndex((prev) => (prev + 1) % totalReviewSlides);
-    }, 5500);
+    }, 5000);
     return () => clearInterval(interval);
-  }, [totalReviewSlides]);
+  }, [totalReviewSlides, isReviewPaused]);
 
   // Auto slide Hero
   useEffect(() => {
@@ -603,18 +607,27 @@ export default function HomePage() {
               ))}
             </div>
 
-            {/* Prev / Next Arrows */}
-            <div className="flex items-center gap-2 ml-auto">
+            {/* Prev / Next Arrows & Auto-play status */}
+            <div className="flex items-center gap-3 ml-auto">
+              <span className="text-[11px] text-slate-400 font-mono hidden sm:inline-block">
+                {reviewCarouselIndex + 1} / {totalReviewSlides}
+              </span>
               <button
-                onClick={() => setReviewCarouselIndex((prev) => (prev - 1 + totalReviewSlides) % totalReviewSlides)}
-                className="p-2.5 rounded-full bg-white/10 hover:bg-resort-gold hover:text-resort-navy text-white transition-all border border-white/10"
+                onClick={() => {
+                  setReviewDirection(-1);
+                  setReviewCarouselIndex((prev) => (prev - 1 + totalReviewSlides) % totalReviewSlides);
+                }}
+                className="p-2.5 rounded-full bg-white/10 hover:bg-resort-gold hover:text-resort-navy text-white transition-all border border-white/10 active:scale-95"
                 aria-label="Previous Review Slide"
               >
                 <ChevronLeft className="w-4 h-4" />
               </button>
               <button
-                onClick={() => setReviewCarouselIndex((prev) => (prev + 1) % totalReviewSlides)}
-                className="p-2.5 rounded-full bg-white/10 hover:bg-resort-gold hover:text-resort-navy text-white transition-all border border-white/10"
+                onClick={() => {
+                  setReviewDirection(1);
+                  setReviewCarouselIndex((prev) => (prev + 1) % totalReviewSlides);
+                }}
+                className="p-2.5 rounded-full bg-white/10 hover:bg-resort-gold hover:text-resort-navy text-white transition-all border border-white/10 active:scale-95"
                 aria-label="Next Review Slide"
               >
                 <ChevronRight className="w-4 h-4" />
@@ -622,66 +635,83 @@ export default function HomePage() {
             </div>
           </div>
 
-          {/* Carousel Viewport */}
-          <div className="overflow-hidden">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {displayedReviews.map((item) => {
-                const guestName = (language === 'bn' && item.name_bn) ? item.name_bn : item.name;
-                const guestLoc = (language === 'bn' && item.location_bn) ? item.location_bn : item.location;
-                const guestComment = (language === 'bn' && item.comment_bn) ? item.comment_bn : item.comment;
-                const guestRoom = (language === 'bn' && item.room_stayed_bn) ? item.room_stayed_bn : item.room_stayed;
-                const stayDate = (language === 'bn' && item.stay_date_bn) ? item.stay_date_bn : item.stay_date;
+          {/* Carousel Viewport with Silky Smooth Sliding Transition & Pause on Hover */}
+          <div 
+            className="overflow-hidden min-h-[300px] py-1"
+            onMouseEnter={() => setIsReviewPaused(true)}
+            onMouseLeave={() => setIsReviewPaused(false)}
+          >
+            <AnimatePresence mode="wait" custom={reviewDirection}>
+              <motion.div
+                key={`${reviewCarouselIndex}-${reviewRatingFilter}`}
+                custom={reviewDirection}
+                initial={{ opacity: 0, x: reviewDirection > 0 ? 60 : -60 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: reviewDirection > 0 ? -60 : 60 }}
+                transition={{
+                  x: { type: 'spring', stiffness: 280, damping: 28 },
+                  opacity: { duration: 0.35 }
+                }}
+                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+              >
+                {currentReviewSlideItems.map((item) => {
+                  const guestName = (language === 'bn' && item.name_bn) ? item.name_bn : item.name;
+                  const guestLoc = (language === 'bn' && item.location_bn) ? item.location_bn : item.location;
+                  const guestComment = (language === 'bn' && item.comment_bn) ? item.comment_bn : item.comment;
+                  const guestRoom = (language === 'bn' && item.room_stayed_bn) ? item.room_stayed_bn : item.room_stayed;
+                  const stayDate = (language === 'bn' && item.stay_date_bn) ? item.stay_date_bn : item.stay_date;
 
-                return (
-                  <div
-                    key={item.id}
-                    className="bg-white/10 hover:bg-white/15 border border-resort-gold/30 p-6 sm:p-7 rounded-3xl backdrop-blur-md space-y-5 flex flex-col justify-between shadow-card hover:shadow-elevated transition-all duration-300 hover:scale-[1.01] animate-fade-in"
-                  >
-                    <div className="space-y-3">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-1">
-                          {[...Array(item.rating)].map((_, i) => (
-                            <Star key={i} className="w-4 h-4 fill-resort-gold text-resort-gold" />
-                          ))}
-                          <span className="text-xs font-bold text-resort-goldLight ml-1">
-                            {item.rating}.0
+                  return (
+                    <div
+                      key={item.id}
+                      className="bg-white/10 hover:bg-white/15 border border-resort-gold/30 p-6 sm:p-7 rounded-3xl backdrop-blur-md space-y-5 flex flex-col justify-between shadow-card hover:shadow-elevated transition-all duration-300 hover:scale-[1.01]"
+                    >
+                      <div className="space-y-3">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-1">
+                            {[...Array(item.rating)].map((_, i) => (
+                              <Star key={i} className="w-4 h-4 fill-resort-gold text-resort-gold" />
+                            ))}
+                            <span className="text-xs font-bold text-resort-goldLight ml-1">
+                              {item.rating}.0
+                            </span>
+                          </div>
+                          <span className="text-[10px] text-resort-goldLight bg-resort-gold/15 px-2.5 py-0.5 rounded-full font-mono border border-resort-gold/20">
+                            {stayDate}
                           </span>
                         </div>
-                        <span className="text-[10px] text-resort-goldLight bg-resort-gold/15 px-2 py-0.5 rounded-full font-mono">
-                          {stayDate}
+
+                        <p className={`text-xs sm:text-sm text-slate-100 leading-relaxed font-light ${
+                          language === 'bn' ? 'font-sans' : 'font-serif italic'
+                        }`}>
+                          &ldquo;{guestComment}&rdquo;
+                        </p>
+                      </div>
+
+                      <div className="pt-4 border-t border-white/10 flex items-center justify-between gap-2">
+                        <div className="flex items-center gap-3">
+                          <div className="w-9 h-9 rounded-full bg-resort-gold text-resort-navy font-bold text-xs flex items-center justify-center shadow-sm">
+                            {guestName.charAt(0)}
+                          </div>
+                          <div>
+                            <h5 className="font-serif font-bold text-white text-sm leading-tight">
+                              {guestName}
+                            </h5>
+                            <span className="text-[11px] text-slate-400 block mt-0.5">
+                              {guestLoc}
+                            </span>
+                          </div>
+                        </div>
+
+                        <span className="text-[10px] bg-white/10 text-resort-goldLight px-2.5 py-1 rounded-lg border border-white/10 font-mono shrink-0">
+                          {guestRoom}
                         </span>
                       </div>
-
-                      <p className={`text-xs sm:text-sm text-slate-100 leading-relaxed font-light ${
-                        language === 'bn' ? 'font-sans' : 'font-serif italic'
-                      }`}>
-                        &ldquo;{guestComment}&rdquo;
-                      </p>
                     </div>
-
-                    <div className="pt-4 border-t border-white/10 flex items-center justify-between gap-2">
-                      <div className="flex items-center gap-3">
-                        <div className="w-9 h-9 rounded-full bg-resort-gold text-resort-navy font-bold text-xs flex items-center justify-center shadow-sm">
-                          {guestName.charAt(0)}
-                        </div>
-                        <div>
-                          <h5 className="font-serif font-bold text-white text-sm leading-tight">
-                            {guestName}
-                          </h5>
-                          <span className="text-[11px] text-slate-400 block mt-0.5">
-                            {guestLoc}
-                          </span>
-                        </div>
-                      </div>
-
-                      <span className="text-[10px] bg-white/10 text-resort-goldLight px-2.5 py-1 rounded-lg border border-white/10 font-mono shrink-0">
-                        {guestRoom}
-                      </span>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
+                  );
+                })}
+              </motion.div>
+            </AnimatePresence>
           </div>
 
           {/* Carousel Pagination Dots */}
@@ -690,11 +720,14 @@ export default function HomePage() {
               {[...Array(totalReviewSlides)].map((_, idx) => (
                 <button
                   key={idx}
-                  onClick={() => setReviewCarouselIndex(idx)}
-                  className={`h-2 rounded-full transition-all ${
+                  onClick={() => {
+                    setReviewDirection(idx > reviewCarouselIndex ? 1 : -1);
+                    setReviewCarouselIndex(idx);
+                  }}
+                  className={`h-2 rounded-full transition-all duration-300 ${
                     reviewCarouselIndex === idx
                       ? 'w-8 bg-resort-gold'
-                      : 'w-2 bg-white/20 hover:bg-white/40'
+                      : 'w-2 bg-white/25 hover:bg-white/50'
                   }`}
                   aria-label={`Go to slide ${idx + 1}`}
                 />
