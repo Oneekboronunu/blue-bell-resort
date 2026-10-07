@@ -112,51 +112,56 @@ export default function Navbar() {
         className={`sticky top-0 z-40 transition-all duration-300 ${
           isScrolled
             ? 'glass-nav shadow-card border-b border-resort-gold/20 py-3'
-            : 'bg-white/95 border-b border-slate-100 py-4'
+            : 'bg-white/95 backdrop-blur-sm border-b border-slate-100 py-3 sm:py-4'
         }`}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between">
           
           {/* Logo */}
-          <BluebellLogo size="md" />
+          <div className="flex items-center">
+            <BluebellLogo size="md" />
+          </div>
 
           {/* Desktop Nav Links */}
-          <nav className="hidden lg:flex items-center space-x-1">
+          <nav className="hidden lg:flex items-center space-x-1 xl:space-x-2">
             {navLinks.map((link) => {
               const isActive = pathname === link.href;
               return (
                 <Link
                   key={link.href}
                   href={link.href}
-                  className={`px-3.5 py-2 text-xs uppercase tracking-widest font-semibold rounded-lg transition-all ${
+                  className={`relative px-3.5 py-2 text-xs uppercase tracking-widest font-semibold rounded-lg transition-all duration-200 ${
                     isActive
-                      ? 'text-resort-primary font-bold bg-resort-gold/15'
+                      ? 'text-resort-primary font-bold bg-resort-gold/15 shadow-sm'
                       : 'text-slate-700 hover:text-resort-primary hover:bg-slate-50'
                   }`}
                 >
                   {link.name}
+                  {isActive && (
+                    <span className="absolute bottom-1 left-1/2 -translate-x-1/2 w-4 h-[2px] bg-resort-gold rounded-full" />
+                  )}
                 </Link>
               );
             })}
           </nav>
 
           {/* Right Action: Book Now CTA & Mobile Menu Trigger */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3">
             <button
               onClick={() => openBookingModal({ type: 'room' })}
-              className="hidden sm:inline-flex items-center gap-2 px-5 py-2.5 bg-resort-primary hover:bg-resort-primaryLight text-white text-xs uppercase tracking-widest font-bold rounded-xl shadow-gold hover:shadow-elevated transition-all duration-300 hover:scale-[1.02]"
+              className="inline-flex items-center gap-1.5 sm:gap-2 px-3.5 sm:px-5 py-2 sm:py-2.5 bg-resort-primary hover:bg-resort-primaryLight text-white text-[11px] sm:text-xs uppercase tracking-widest font-bold rounded-xl shadow-gold hover:shadow-elevated transition-all duration-300 hover:scale-[1.02]"
             >
-              <Sparkles className="w-3.5 h-3.5 text-resort-goldLight" />
+              <Sparkles className="w-3.5 h-3.5 text-resort-goldLight animate-pulse" />
               <span>{t.nav.bookNow}</span>
             </button>
 
             {/* Mobile Menu Button */}
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="p-2 rounded-lg text-slate-700 hover:text-resort-primary hover:bg-slate-100 lg:hidden"
+              className="p-2 sm:p-2.5 rounded-xl text-slate-700 hover:text-resort-primary hover:bg-slate-100 transition-colors lg:hidden border border-slate-200"
               aria-label="Toggle navigation menu"
             >
-              {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+              {isMobileMenuOpen ? <X className="w-5 h-5 text-resort-primary" /> : <Menu className="w-5 h-5" />}
             </button>
           </div>
         </div>

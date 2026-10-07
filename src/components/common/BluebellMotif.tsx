@@ -78,7 +78,7 @@ export function BluebellDivider({
 }
 
 export function BluebellLogo({
-  variant = 'default', // 'default' (blue/dark) or 'light' (white background container for dark headers) or 'admin'
+  variant = 'default', // 'default' | 'light' | 'admin'
   className = '',
   size = 'md', // 'sm' | 'md' | 'lg'
 }: {
@@ -89,30 +89,30 @@ export function BluebellLogo({
   const { siteSettings } = useStore();
 
   const sizeClasses = {
-    sm: { img: 'h-8 md:h-9 max-w-[140px]', icon: 'w-7 h-7', text: 'text-lg', tag: 'text-[9px]' },
-    md: { img: 'h-11 md:h-12 max-w-[190px]', icon: 'w-9 h-9', text: 'text-xl md:text-2xl', tag: 'text-[10px]' },
-    lg: { img: 'h-14 md:h-16 max-w-[240px]', icon: 'w-12 h-12', text: 'text-2xl md:text-3xl', tag: 'text-xs' },
+    sm: 'h-8 sm:h-9 md:h-10 max-w-[160px]',
+    md: 'h-10 sm:h-12 md:h-14 max-w-[220px]',
+    lg: 'h-13 sm:h-15 md:h-18 max-w-[280px]',
   }[size];
 
   const logoUrl = siteSettings.logo_url || '/logo.png';
-
   const isDarkVariant = variant === 'light' || variant === 'admin';
 
   return (
     <Link 
       href={variant === 'admin' ? '/admin' : '/'} 
       className={`group inline-flex items-center transition-transform duration-300 hover:scale-[1.02] ${className}`}
+      aria-label={siteSettings.hotel_name || 'Blue Bell Resort'}
     >
-      <div className={`flex items-center rounded-xl transition-all ${
+      <div className={`flex items-center transition-all ${
         isDarkVariant 
-          ? 'bg-white p-1.5 sm:p-2 rounded-xl shadow-elevated border border-resort-gold/40' 
-          : 'p-1'
+          ? 'bg-white/95 px-3 py-2 rounded-xl shadow-card border border-resort-gold/40 backdrop-blur-sm' 
+          : 'p-0.5'
       }`}>
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img 
           src={logoUrl} 
           alt={siteSettings.hotel_name || 'Blue Bell Resort'} 
-          className={`${sizeClasses.img} w-auto object-contain`}
+          className={`${sizeClasses} w-auto object-contain drop-shadow-[0_1px_2px_rgba(0,0,0,0.06)]`}
         />
       </div>
     </Link>
