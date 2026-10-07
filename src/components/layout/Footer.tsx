@@ -2,194 +2,235 @@
 
 import React from 'react';
 import Link from 'next/link';
-import {
-  MapPin,
-  Phone,
-  Mail,
-  ShieldCheck,
-  Truck,
-  Building,
-  CreditCard,
-  ExternalLink,
-} from 'lucide-react';
-import Logo from './Logo';
-import LanguageSwitcher from './LanguageSwitcher';
+import { usePathname } from 'next/navigation';
 import { useStore } from '@/lib/store/useStore';
-import { CATEGORIES } from '@/data/categories';
+import { useTranslation } from '@/lib/i18n/translations';
+import { BluebellLogo, BluebellDivider } from '@/components/common/BluebellMotif';
+import { 
+  MapPin, 
+  Phone, 
+  Mail, 
+  MessageSquare, 
+  Navigation, 
+  ExternalLink,
+  ShieldCheck,
+  Award,
+  Lock
+} from 'lucide-react';
 
 export default function Footer() {
-  const { language, t } = useStore();
-  const isBn = language === 'bn';
+  const pathname = usePathname();
+  const { siteSettings, language } = useStore();
+  const t = useTranslation(language);
+
+  const isAdmin = pathname.startsWith('/admin');
+  if (isAdmin) return null; // Admin has its own layout
+
+  const lat = siteSettings.latitude || 22.3626557;
+  const lng = siteSettings.longitude || 91.7825618;
+  const directionsUrl = `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`;
+  const googleMapsUrl = siteSettings.google_maps_link || `https://www.google.com/maps/place/Blue+Bell+Resort/@${lat},${lng},712m`;
 
   return (
-    <footer className="bg-slate-900 text-slate-300 pt-16 pb-12 border-t border-slate-800">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Top 4-Column Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 pb-12 border-b border-slate-800">
-          {/* Column 1: Brand & Identity */}
-          <div className="space-y-4">
-            <div className="bg-slate-800/80 p-2.5 rounded-xl w-fit border border-slate-700">
-              <Logo variant="footer" />
-            </div>
-            <p className="text-xs text-slate-400 leading-relaxed">
-              {t.footer.aboutText}
+    <footer className="bg-resort-navy text-slate-300 relative overflow-hidden border-t-2 border-resort-gold/30">
+      {/* Subtle background glow */}
+      <div className="absolute top-0 right-0 w-96 h-96 bg-resort-primary/20 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute bottom-0 left-0 w-96 h-96 bg-resort-gold/10 rounded-full blur-3xl pointer-events-none" />
+
+      <div className="max-w-7xl mx-auto px-6 pt-16 pb-12 relative z-10">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 lg:gap-8">
+          
+          {/* Brand Col */}
+          <div className="space-y-4 lg:pr-4">
+            <BluebellLogo variant="light" size="lg" />
+            <p className="text-xs text-slate-300 leading-relaxed font-light mt-3">
+              &ldquo;{siteSettings.tagline}&rdquo;
             </p>
-            <div className="pt-2 flex flex-col gap-2 text-xs text-slate-300">
-              <div className="flex items-center gap-2">
-                <ShieldCheck className="w-4 h-4 text-brand-400 shrink-0" />
-                <span>{isBn ? '১০০% আসল ফর্মুলেশন' : '100% Genuine Certified Formulation'}</span>
+            <p className="text-xs text-slate-400 leading-relaxed">
+              Experience the unmatched coastal beauty and refined tranquility of Chattogram. From handcrafted suites to curated chauffeured fleet services.
+            </p>
+            <div className="pt-2 flex items-center gap-3">
+              <div className="flex items-center gap-1.5 text-xs text-resort-goldLight bg-white/5 border border-resort-gold/20 px-3 py-1.5 rounded-lg">
+                <Award className="w-4 h-4 text-resort-gold" />
+                <span>Premier Luxury Resort</span>
               </div>
-              <div className="flex items-center gap-2">
-                <Truck className="w-4 h-4 text-brand-400 shrink-0" />
-                <span>{isBn ? 'সারা বাংলাদেশে নির্ভরযোগ্য ডেলিভারি' : 'Nationwide Secure Logistics'}</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Building className="w-4 h-4 text-brand-400 shrink-0" />
-                <span>{isBn ? 'কর্পোরেট বাল্ক সাপ্লাই ও ডিসকাউন্ট' : 'Corporate Bulk Invoicing'}</span>
-              </div>
-            </div>
-
-            {/* Facebook Social Pill */}
-            <div className="pt-2">
-              <a
-                href="https://www.facebook.com/MyCarnivalBDOnline/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-3 py-1.5 bg-[#1877F2]/10 hover:bg-[#1877F2]/20 border border-[#1877F2]/30 rounded-xl text-xs font-bold text-blue-400 hover:text-blue-300 transition-colors"
-              >
-                <svg className="w-4 h-4 text-[#1877F2]" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
-                </svg>
-                <span>{isBn ? 'অফিসিয়াল ফেসবুক পেজ' : 'Official Facebook Page'}</span>
-              </a>
             </div>
           </div>
 
-          {/* Column 2: Shop & Categories */}
+          {/* Quick Links */}
           <div className="space-y-3">
-            <h3 className="text-sm font-bold text-white uppercase tracking-wider">
+            <h4 className="font-serif text-base font-bold text-white uppercase tracking-wider text-resort-goldLight border-b border-white/10 pb-2">
               {t.footer.quickLinks}
-            </h3>
+            </h4>
             <ul className="space-y-2 text-xs">
-              {CATEGORIES.slice(0, 5).map((cat) => (
-                <li key={cat.id}>
-                  <Link
-                    href={`/shop?category=${cat.slug}`}
-                    className="hover:text-white transition-colors"
-                  >
-                    {isBn ? cat.name_bn : cat.name_en}
-                  </Link>
-                </li>
-              ))}
               <li>
-                <Link href="/offers" className="text-amber-400 hover:text-amber-300 font-medium">
-                  {isBn ? '🔥 বিশেষ অফার ও কম্বো' : '🔥 Special Offers & Bundles'}
+                <Link href="/" className="hover:text-resort-goldLight transition-colors">
+                  {t.nav.home}
                 </Link>
               </li>
               <li>
-                <Link href="/corporate" className="text-brand-400 hover:text-brand-300 font-medium">
-                  {t.common.corporate}
+                <Link href="/rooms" className="hover:text-resort-goldLight transition-colors">
+                  {t.nav.rooms}
+                </Link>
+              </li>
+              <li>
+                <Link href="/services" className="hover:text-resort-goldLight transition-colors">
+                  {t.nav.services}
+                </Link>
+              </li>
+              <li>
+                <Link href="/gallery" className="hover:text-resort-goldLight transition-colors">
+                  {t.nav.gallery}
+                </Link>
+              </li>
+              <li>
+                <Link href="/location" className="hover:text-resort-goldLight transition-colors">
+                  {t.nav.location}
+                </Link>
+              </li>
+              <li>
+                <Link href="/about" className="hover:text-resort-goldLight transition-colors">
+                  {t.nav.about}
+                </Link>
+              </li>
+              <li>
+                <Link href="/contact" className="hover:text-resort-goldLight transition-colors">
+                  {t.nav.contact}
                 </Link>
               </li>
             </ul>
           </div>
 
-          {/* Column 3: Customer Care & Policies */}
+          {/* Signature Services */}
           <div className="space-y-3">
-            <h3 className="text-sm font-bold text-white uppercase tracking-wider">
-              {t.footer.customerCare}
-            </h3>
-            <ul className="space-y-2 text-xs">
+            <h4 className="font-serif text-base font-bold text-white uppercase tracking-wider text-resort-goldLight border-b border-white/10 pb-2">
+              {t.footer.resortServices}
+            </h4>
+            <ul className="space-y-2 text-xs text-slate-300">
               <li>
-                <Link href="/track-order" className="hover:text-white transition-colors">
-                  {t.common.orderTracking}
+                <Link href="/services" className="hover:text-resort-goldLight transition-colors flex items-center justify-between">
+                  <span>Rent a Car (Hourly & Daily)</span>
+                  <span className="text-[10px] text-resort-gold font-mono">৳600/hr</span>
                 </Link>
               </li>
               <li>
-                <Link href="/locations" className="hover:text-white transition-colors">
-                  {t.common.locations}
+                <Link href="/services" className="hover:text-resort-goldLight transition-colors flex items-center justify-between">
+                  <span>VIP Airport Pickup & Drop</span>
+                  <span className="text-[10px] text-resort-gold font-mono">CGP Terminal</span>
                 </Link>
               </li>
               <li>
-                <Link href="/corporate" className="hover:text-white transition-colors">
-                  {t.common.quoteRequest}
+                <Link href="/services" className="hover:text-resort-goldLight transition-colors flex items-center justify-between">
+                  <span>The Bluebell Restaurant</span>
+                  <span className="text-[10px] text-resort-gold font-mono">Coastal Cuisine</span>
                 </Link>
               </li>
               <li>
-                <Link href="/privacy-policy" className="hover:text-white transition-colors">
-                  {t.footer.privacyPolicy}
+                <Link href="/services" className="hover:text-resort-goldLight transition-colors flex items-center justify-between">
+                  <span>Grand Event & Banquet Hall</span>
+                  <span className="text-[10px] text-resort-gold font-mono">350 Guests</span>
                 </Link>
               </li>
               <li>
-                <Link href="/terms-of-conditions" className="hover:text-white transition-colors">
-                  {t.footer.terms}
+                <Link href="/services" className="hover:text-resort-goldLight transition-colors flex items-center justify-between">
+                  <span>Coastal Guided Tours</span>
+                  <span className="text-[10px] text-resort-gold font-mono">Patenga Coast</span>
                 </Link>
               </li>
               <li>
-                <Link href="/refund-policy" className="hover:text-white transition-colors">
-                  {t.footer.refundPolicy}
+                <Link href="/services" className="hover:text-resort-goldLight transition-colors flex items-center justify-between">
+                  <span>Serenity Spa & Wellness</span>
+                  <span className="text-[10px] text-resort-gold font-mono">Aromatherapy</span>
                 </Link>
               </li>
             </ul>
           </div>
 
-          {/* Column 4: Contact & Locations */}
+          {/* Contact & Map Directions */}
           <div className="space-y-3">
-            <h3 className="text-sm font-bold text-white uppercase tracking-wider">
+            <h4 className="font-serif text-base font-bold text-white uppercase tracking-wider text-resort-goldLight border-b border-white/10 pb-2">
               {t.footer.contactInfo}
-            </h3>
-            <div className="space-y-3 text-xs">
+            </h4>
+            
+            <div className="space-y-2.5 text-xs">
               <div className="flex items-start gap-2.5">
-                <MapPin className="w-4 h-4 text-brand-400 shrink-0 mt-0.5" />
-                <div className="space-y-1">
-                  <div className="text-slate-200 font-medium">
-                    {isBn ? 'সাভার হাব (প্রধান অফিস):' : 'Savar Hub (HQ):'}
-                  </div>
-                  <div className="text-slate-400">{t.footer.addressSavar}</div>
-                  <div className="text-slate-200 font-medium pt-1">
-                    {isBn ? 'চাঁদপুর শাখা:' : 'Chandpur Branch:'}
-                  </div>
-                  <div className="text-slate-400">{t.footer.addressChandpur}</div>
-                </div>
+                <MapPin className="w-4 h-4 text-resort-gold shrink-0 mt-0.5" />
+                <span className="text-slate-300 leading-relaxed">
+                  {siteSettings.address}
+                </span>
               </div>
 
-              <div className="flex items-center gap-2.5 pt-1">
-                <Phone className="w-4 h-4 text-brand-400 shrink-0" />
-                <a
-                  href={`tel:${t.footer.phone}`}
-                  className="hover:text-white transition-colors font-medium text-slate-200"
-                >
-                  {t.footer.phone}
+              <div className="flex items-center gap-2.5">
+                <Phone className="w-4 h-4 text-resort-gold shrink-0" />
+                <a href={`tel:${siteSettings.phone}`} className="hover:text-resort-goldLight transition-colors">
+                  {siteSettings.phone}
                 </a>
               </div>
 
               <div className="flex items-center gap-2.5">
-                <Mail className="w-4 h-4 text-brand-400 shrink-0" />
-                <a
-                  href={`mailto:${t.footer.email}`}
-                  className="hover:text-white transition-colors text-slate-300"
+                <MessageSquare className="w-4 h-4 text-emerald-400 shrink-0" />
+                <a 
+                  href={`https://wa.me/${(siteSettings.whatsapp || '').replace(/[^0-9]/g, '')}`} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="text-emerald-400 hover:text-emerald-300 transition-colors"
                 >
-                  {t.footer.email}
+                  WhatsApp: {siteSettings.whatsapp || siteSettings.phone}
                 </a>
               </div>
+
+              <div className="flex items-center gap-2.5">
+                <Mail className="w-4 h-4 text-resort-gold shrink-0" />
+                <a href={`mailto:${siteSettings.email}`} className="hover:text-resort-goldLight transition-colors">
+                  {siteSettings.email}
+                </a>
+              </div>
+            </div>
+
+            <div className="pt-2 flex flex-col gap-2">
+              <a
+                href={directionsUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center justify-center gap-2 px-3 py-2 bg-resort-gold hover:bg-resort-goldLight text-resort-navy text-xs font-bold rounded-lg shadow-sm transition-all"
+              >
+                <Navigation className="w-3.5 h-3.5" />
+                Get Driving Directions
+              </a>
+
+              <a
+                href={googleMapsUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center justify-center gap-2 px-3 py-1.5 bg-white/10 hover:bg-white/15 text-slate-200 text-[11px] rounded-lg border border-white/10 transition-colors"
+              >
+                <ExternalLink className="w-3 h-3 text-resort-gold" />
+                View on Google Maps
+              </a>
             </div>
           </div>
         </div>
 
-        {/* Bottom Strip */}
-        <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-400">
-          <div>{t.footer.copyright}</div>
+        {/* Floral Motif Divider */}
+        <BluebellDivider dark className="my-10 opacity-70" />
 
-          <div className="flex items-center gap-4">
-            <span className="text-slate-500">{isBn ? 'ভাষা:' : 'Language:'}</span>
-            <LanguageSwitcher />
-          </div>
+        {/* Bottom Bar */}
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-400 font-light pt-2">
+          <p>
+            © {new Date().getFullYear()} <strong className="text-white font-medium">{siteSettings.hotel_name}</strong>. {t.footer.allRightsReserved}
+          </p>
 
-          <div className="flex items-center gap-2 text-[11px] text-slate-500">
-            <span>{isBn ? 'পেমেন্ট মেথড:' : 'Payment:'}</span>
-            <span className="px-2 py-0.5 bg-slate-800 text-slate-300 rounded">Cash on Delivery</span>
-            <span className="px-2 py-0.5 bg-slate-800 text-slate-300 rounded">bKash</span>
-            <span className="px-2 py-0.5 bg-slate-800 text-slate-300 rounded">Nagad</span>
+          <div className="flex items-center gap-6">
+            <span className="text-[11px] text-slate-500">
+              Coordinates: {lat.toFixed(4)}° N, {lng.toFixed(4)}° E
+            </span>
+            <Link 
+              href="/admin/login" 
+              className="flex items-center gap-1.5 text-slate-400 hover:text-resort-goldLight transition-colors text-xs"
+            >
+              <Lock className="w-3 h-3 text-resort-gold" />
+              <span>{t.footer.adminLogin}</span>
+            </Link>
           </div>
         </div>
       </div>

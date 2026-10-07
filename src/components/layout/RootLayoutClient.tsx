@@ -1,41 +1,30 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
-import Header from './Header';
+import React, { useEffect } from 'react';
+import Navbar from './Navbar';
 import Footer from './Footer';
-import CartDrawer from '@/components/ecommerce/CartDrawer';
-import QuickViewModal from '@/components/ecommerce/QuickViewModal';
-import WhatsAppButton from '@/components/common/WhatsAppButton';
-import ToastNotification from '@/components/common/ToastNotification';
-import MobileBottomNav from './MobileBottomNav';
+import FloatingWhatsApp from '@/components/common/FloatingWhatsApp';
+import BookingModal from '@/components/common/BookingModal';
 import { useStore } from '@/lib/store/useStore';
 
-export default function RootLayoutClient({ children }: { children: React.ReactNode }) {
-  const [mounted, setMounted] = useState(false);
-  const { language } = useStore();
+export default function RootLayoutClient({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  const { syncWithSupabase } = useStore();
 
   useEffect(() => {
-    setMounted(true);
-  }, []);
+    syncWithSupabase();
+  }, [syncWithSupabase]);
 
   return (
-    <div className={`min-h-screen flex flex-col bg-white text-slate-900 pb-16 md:pb-0 ${language === 'bn' ? 'lang-bn' : ''}`}>
-      <Header />
-      <main className="flex-1">
-        {children}
-      </main>
+    <div className="min-h-screen flex flex-col justify-between bg-resort-sand/40 selection:bg-resort-gold/30 selection:text-resort-primaryDark">
+      <Navbar />
+      <main className="flex-grow">{children}</main>
       <Footer />
-
-      {/* Global Client Portals / Overlays */}
-      {mounted && (
-        <>
-          <CartDrawer />
-          <QuickViewModal />
-          <WhatsAppButton />
-          <ToastNotification />
-          <MobileBottomNav />
-        </>
-      )}
+      <FloatingWhatsApp />
+      <BookingModal />
     </div>
   );
 }

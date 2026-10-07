@@ -1,370 +1,385 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
-import { CartItem, Product, Language, ProductVariant, Order, CorporateQuote } from '@/types';
-import { translations } from '@/lib/i18n/translations';
-import { PRODUCTS } from '@/data/products';
-import { INITIAL_ORDERS, INITIAL_CORPORATE_QUOTES } from '@/data/initialStoreData';
+import { 
+  SiteSettings, 
+  Room, 
+  Service, 
+  MediaItem, 
+  Testimonial, 
+  Booking, 
+  AdminUser,
+  BookingStatus 
+} from '@/types';
+import { 
+  initialSiteSettings, 
+  initialRooms, 
+  initialServices, 
+  initialMedia, 
+  initialTestimonials, 
+  initialBookings 
+} from '@/data/seedData';
+import { supabase, isSupabaseConfigured } from '@/lib/supabase';
 
-interface StoreState {
-  // Language
-  language: Language;
-  setLanguage: (lang: Language) => void;
-  t: typeof translations.en;
-
-  // Products Management
-  products: Product[];
-  addProduct: (product: Product) => void;
-  updateProduct: (id: string, updated: Partial<Product>) => void;
-  deleteProduct: (id: string) => void;
-  updateStock: (id: string, newStock: number) => void;
-  resetDefaultProducts: () => void;
-
-  // Orders Management & Sales Tracking
-  orders: Order[];
-  addOrder: (order: Order) => void;
-  updateOrderStatus: (orderId: string, status: Order['status']) => void;
-  deleteOrder: (orderId: string) => void;
-  getTotalRevenue: () => number;
-  getOrdersCountByStatus: (status: Order['status']) => number;
-
-  // Corporate Leads
-  corporateQuotes: CorporateQuote[];
-  addCorporateQuote: (quote: Omit<CorporateQuote, 'id' | 'date' | 'status'>) => void;
-  updateQuoteStatus: (id: string, status: CorporateQuote['status']) => void;
-  deleteCorporateQuote: (id: string) => void;
-
-  // Cart
-  cart: CartItem[];
-  isCartOpen: boolean;
-  openCart: () => void;
-  closeCart: () => void;
-  toggleCart: () => void;
-  addToCart: (product: Product, quantity?: number, variant?: ProductVariant) => void;
-  removeFromCart: (productId: string, variantId?: string) => void;
-  updateCartQuantity: (productId: string, quantity: number, variantId?: string) => void;
-  clearCart: () => void;
-  getCartCount: () => number;
-  getCartTotal: () => number;
-
-  // Wishlist
-  wishlist: string[];
-  toggleWishlist: (productId: string) => void;
-  isInWishlist: (productId: string) => boolean;
-
-  // Quick View Modal
-  quickViewProduct: Product | null;
-  setQuickViewProduct: (product: Product | null) => void;
-
-  // Search History & Analytics
-  recentSearches: string[];
-  addRecentSearch: (query: string) => void;
-  clearRecentSearches: () => void;
-  searchAnalytics: { query: string; count: number; timestamp: number }[];
-  failedSearches: { query: string; timestamp: number }[];
-  logFailedSearch: (query: string) => void;
-
-  // Toast notifications
-  toastMessage: string | null;
-  showToast: (message: string) => void;
+interface BookingModalState {
+  isOpen: boolean;
+  type: 'room' | 'service';
+  itemId?: string;
+  itemName?: string;
+  itemPrice?: number;
+  serviceRateType?: 'hourly' | 'daily' | 'fixed';
+  hourlyRate?: number;
+  dailyRate?: number;
 }
 
-export const useStore = create<StoreState>()(
+interface ResortState {
+  // Data
+  siteSettings: SiteSettings;
+  rooms: Room[];
+  services: Service[];
+  media: MediaItem[];
+  testimonials: Testimonial[];
+  bookings: Booking[];
+  
+  // Auth
+  isAdminAuthenticated: boolean;
+  adminUser: AdminUser | null;
+  
+  // UI & i18n
+  language: 'en' | 'bn';
+  bookingModal: BookingModalState;
+  
+  // Actions - Settings
+  updateSiteSettings: (settings: Partial<SiteSettings>) => void;
+  
+  // Actions - Rooms
+  addRoom: (room: Omit<Room, 'id'>) => void;
+  updateRoom: (id: string, room: Partial<Room>) => void;
+  deleteRoom: (id: string) => void;
+  toggleRoomAvailability: (id: string) => void;
+  
+  // Actions - Services
+  addService: (service: Omit<Service, 'id'>) => void;
+  updateService: (id: string, service: Partial<Service>) => void;
+  deleteService: (id: string) => void;
+  toggleServiceVisibility: (id: string) => void;
+  
+  // Actions - Media
+  addMediaItem: (item: Omit<MediaItem, 'id' | 'created_at'>) => void;
+  deleteMediaItem: (id: string) => void;
+  
+  // Actions - Bookings
+  addBooking: (booking: Omit<Booking, 'id' | 'reference_no' | 'created_at' | 'status'>) => Booking;
+  updateBookingStatus: (id: string, status: BookingStatus) => void;
+  
+  // Actions - Auth
+  loginAdmin: (email: string, pass: string) => Promise<{ success: boolean; error?: string }>;
+  logoutAdmin: () => void;
+  
+  // Actions - UI
+  setLanguage: (lang: 'en' | 'bn') => void;
+  openBookingModal: (params: Omit<BookingModalState, 'isOpen'>) => void;
+  closeBookingModal: () => void;
+  resetToDefaults: () => void;
+  syncWithSupabase: () => Promise<void>;
+}
+
+export const useStore = create<ResortState>()(
   persist(
     (set, get) => ({
-      // Language
-      language: 'bn',
-      t: translations.bn,
-      setLanguage: (lang: Language) => {
-        set({
-          language: lang,
-          t: translations[lang] || translations.bn,
-        });
+      siteSettings: initialSiteSettings,
+      rooms: initialRooms,
+      services: initialServices,
+      media: initialMedia,
+      testimonials: initialTestimonials,
+      bookings: initialBookings,
+      
+      isAdminAuthenticated: false,
+      adminUser: null,
+      
+      language: 'en',
+      bookingModal: {
+        isOpen: false,
+        type: 'room',
       },
 
-      // Products Management
-      products: PRODUCTS,
-      addProduct: (product: Product) => {
-        set((state) => ({
-          products: [product, ...state.products],
-        }));
-        get().showToast(
-          get().language === 'bn'
-            ? `"${product.name_bn}" পণ্যটি সফলভাবে যুক্ত হয়েছে!`
-            : `Product "${product.name_en}" added successfully!`
-        );
-      },
-      updateProduct: (id: string, updated: Partial<Product>) => {
-        set((state) => ({
-          products: state.products.map((p) => (p.id === id ? { ...p, ...updated, updated_at: new Date().toISOString() } : p)),
-        }));
-        get().showToast(
-          get().language === 'bn' ? 'পণ্য আপডেট সম্পন্ন হয়েছে!' : 'Product updated successfully!'
-        );
-      },
-      deleteProduct: (id: string) => {
-        set((state) => ({
-          products: state.products.filter((p) => p.id !== id),
-        }));
-        get().showToast(
-          get().language === 'bn' ? 'পণ্যটি তালিকা থেকে মুছে ফেলা হয়েছে' : 'Product deleted successfully'
-        );
-      },
-      updateStock: (id: string, newStock: number) => {
-        set((state) => ({
-          products: state.products.map((p) => (p.id === id ? { ...p, stock: Math.max(0, newStock) } : p)),
-        }));
-      },
-      resetDefaultProducts: () => {
-        set({ products: PRODUCTS });
-        get().showToast(
-          get().language === 'bn' ? 'ডিফল্ট পণ্য তালিকা রিস্টোর করা হয়েছে' : 'Default product catalog restored'
-        );
-      },
-
-      // Orders Management
-      orders: INITIAL_ORDERS,
-      addOrder: (order: Order) => {
-        set((state) => ({
-          orders: [order, ...state.orders],
-        }));
-      },
-      updateOrderStatus: (orderId: string, status: Order['status']) => {
-        const timeNow = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-        set((state) => ({
-          orders: state.orders.map((ord) => {
-            if (ord.id === orderId || ord.orderNumber === orderId) {
-              const updatedTimeline = ord.timeline.map((step) => {
-                if (step.status === status) {
-                  return { ...step, completed: true, current: true, time: timeNow };
-                }
-                return { ...step, current: false };
-              });
-              return { ...ord, status, timeline: updatedTimeline };
-            }
-            return ord;
-          }),
-        }));
-        get().showToast(
-          get().language === 'bn'
-            ? `অর্ডার #${orderId} এর স্ট্যাটাস আপডেট হয়েছে: ${status}`
-            : `Order #${orderId} status updated to: ${status}`
-        );
-      },
-      deleteOrder: (orderId: string) => {
-        set((state) => ({
-          orders: state.orders.filter((o) => o.id !== orderId && o.orderNumber !== orderId),
-        }));
-      },
-      getTotalRevenue: () => {
-        return get().orders.reduce((sum, ord) => sum + ord.total, 0);
-      },
-      getOrdersCountByStatus: (status: Order['status']) => {
-        return get().orders.filter((o) => o.status === status).length;
-      },
-
-      // Corporate Quotes
-      corporateQuotes: INITIAL_CORPORATE_QUOTES,
-      addCorporateQuote: (data) => {
-        const newQuote: CorporateQuote = {
-          ...data,
-          id: `cq-${Date.now()}`,
-          date: new Date().toISOString().split('T')[0],
-          status: 'new',
-        };
-        set((state) => ({
-          corporateQuotes: [newQuote, ...state.corporateQuotes],
-        }));
-      },
-      updateQuoteStatus: (id: string, status: CorporateQuote['status']) => {
-        set((state) => ({
-          corporateQuotes: state.corporateQuotes.map((q) => (q.id === id ? { ...q, status } : q)),
-        }));
-      },
-      deleteCorporateQuote: (id: string) => {
-        set((state) => ({
-          corporateQuotes: state.corporateQuotes.filter((q) => q.id !== id),
-        }));
-      },
-
-      // Cart
-      cart: [],
-      isCartOpen: false,
-      openCart: () => set({ isCartOpen: true }),
-      closeCart: () => set({ isCartOpen: false }),
-      toggleCart: () => set((state) => ({ isCartOpen: !state.isCartOpen })),
-
-      addToCart: (product: Product, quantity = 1, variant?: ProductVariant) => {
-        const currentCart = get().cart;
-        const targetVariantId = variant ? variant.id : undefined;
-
-        const existingIndex = currentCart.findIndex(
-          (item) =>
-            item.product.id === product.id &&
-            item.selectedVariant?.id === targetVariantId
-        );
-
-        let newCart: CartItem[];
-        if (existingIndex > -1) {
-          newCart = [...currentCart];
-          newCart[existingIndex].quantity += quantity;
-        } else {
-          newCart = [
-            ...currentCart,
-            {
-              product,
-              selectedVariant: variant,
-              quantity,
-            },
-          ];
-        }
-
-        const isBn = get().language === 'bn';
-        const prodName = isBn ? product.name_bn : product.name_en;
-        const toastText = isBn
-          ? `"${prodName}" কার্টে যোগ করা হয়েছে`
-          : `Added "${prodName}" to cart`;
-
-        set({ cart: newCart, isCartOpen: true });
-        get().showToast(toastText);
-      },
-
-      removeFromCart: (productId: string, variantId?: string) => {
-        set((state) => ({
-          cart: state.cart.filter(
-            (item) =>
-              !(item.product.id === productId && item.selectedVariant?.id === variantId)
-          ),
-        }));
-      },
-
-      updateCartQuantity: (productId: string, quantity: number, variantId?: string) => {
-        if (quantity <= 0) {
-          get().removeFromCart(productId, variantId);
-          return;
-        }
-        set((state) => ({
-          cart: state.cart.map((item) => {
-            if (item.product.id === productId && item.selectedVariant?.id === variantId) {
-              return { ...item, quantity };
-            }
-            return item;
-          }),
-        }));
-      },
-
-      clearCart: () => set({ cart: [] }),
-
-      getCartCount: () => {
-        return get().cart.reduce((total, item) => total + item.quantity, 0);
-      },
-
-      getCartTotal: () => {
-        return get().cart.reduce((total, item) => {
-          const price = item.selectedVariant
-            ? (item.selectedVariant.sale_price ?? item.selectedVariant.price)
-            : (item.product.sale_price ?? item.product.price);
-          return total + price * item.quantity;
-        }, 0);
-      },
-
-      // Wishlist
-      wishlist: [],
-      toggleWishlist: (productId: string) => {
-        const current = get().wishlist;
-        const exists = current.includes(productId);
-        const next = exists
-          ? current.filter((id) => id !== productId)
-          : [...current, productId];
-
-        const isBn = get().language === 'bn';
-        const msg = exists
-          ? (isBn ? 'পছন্দের তালিকা থেকে সরানো হয়েছে' : 'Removed from wishlist')
-          : (isBn ? 'পছন্দের তালিকায় যুক্ত হয়েছে' : 'Saved to wishlist');
-
-        set({ wishlist: next });
-        get().showToast(msg);
-      },
-      isInWishlist: (productId: string) => get().wishlist.includes(productId),
-
-      // Quick View
-      quickViewProduct: null,
-      setQuickViewProduct: (product: Product | null) =>
-        set({ quickViewProduct: product }),
-
-      // Search History & Analytics
-      recentSearches: ['Floor Cleaner', '5L Hand Wash', 'Power Max', 'Jasmine Freshener'],
-      searchAnalytics: [
-        { query: '5 liter floor cleaner', count: 18, timestamp: Date.now() - 3600000 },
-        { query: 'hospital disinfectant', count: 14, timestamp: Date.now() - 7200000 },
-        { query: 'softtouch hand wash 5L', count: 12, timestamp: Date.now() - 10800000 },
-        { query: 'dishwash liquid 5L', count: 9, timestamp: Date.now() - 14400000 },
-        { query: 'automatic air freshener', count: 7, timestamp: Date.now() - 18000000 },
-      ],
-      addRecentSearch: (query: string) => {
-        if (!query.trim()) return;
-        const trimmed = query.trim();
-        const currentRecent = get().recentSearches.filter(
-          (q) => q.toLowerCase() !== trimmed.toLowerCase()
-        );
-        const currentAnalytics = [...get().searchAnalytics];
-        const existingIdx = currentAnalytics.findIndex(
-          (a) => a.query.toLowerCase() === trimmed.toLowerCase()
-        );
-
-        if (existingIdx > -1) {
-          currentAnalytics[existingIdx].count += 1;
-          currentAnalytics[existingIdx].timestamp = Date.now();
-        } else {
-          currentAnalytics.unshift({ query: trimmed, count: 1, timestamp: Date.now() });
-        }
-
-        set({
-          recentSearches: [trimmed, ...currentRecent].slice(0, 8),
-          searchAnalytics: currentAnalytics.slice(0, 30),
-        });
-      },
-      clearRecentSearches: () => set({ recentSearches: [] }),
-
-      failedSearches: [
-        { query: '20 liter floor cleaner', timestamp: Date.now() - 86400000 },
-        { query: 'toilet paper rolls bulk', timestamp: Date.now() - 172800000 },
-        { query: 'automatic touchless sanitizer dispenser', timestamp: Date.now() - 259200000 },
-      ],
-      logFailedSearch: (query: string) => {
-        if (!query.trim()) return;
-        set((state) => ({
-          failedSearches: [
-            { query: query.trim(), timestamp: Date.now() },
-            ...state.failedSearches.slice(0, 49),
-          ],
-        }));
-      },
-
-      // Toast
-      toastMessage: null,
-      showToast: (message: string) => {
-        set({ toastMessage: message });
-        setTimeout(() => {
-          if (get().toastMessage === message) {
-            set({ toastMessage: null });
+      updateSiteSettings: (newSettings) => {
+        set((state) => {
+          const updated = { ...state.siteSettings, ...newSettings };
+          // If Supabase is available, sync asynchronously
+          if (isSupabaseConfigured && supabase) {
+            supabase.from('site_settings').upsert({ id: 'current', ...updated }).then();
           }
-        }, 3000);
+          return { siteSettings: updated };
+        });
+      },
+
+      addRoom: (roomData) => {
+        const newRoom: Room = {
+          ...roomData,
+          id: `room-${Date.now()}`,
+          created_at: new Date().toISOString(),
+        };
+        set((state) => {
+          const updated = [newRoom, ...state.rooms];
+          if (isSupabaseConfigured && supabase) {
+            supabase.from('rooms').insert(newRoom).then();
+          }
+          return { rooms: updated };
+        });
+      },
+
+      updateRoom: (id, roomData) => {
+        set((state) => {
+          const updated = state.rooms.map((room) =>
+            room.id === id ? { ...room, ...roomData } : room
+          );
+          if (isSupabaseConfigured && supabase) {
+            supabase.from('rooms').update(roomData).eq('id', id).then();
+          }
+          return { rooms: updated };
+        });
+      },
+
+      deleteRoom: (id) => {
+        set((state) => {
+          const updated = state.rooms.filter((room) => room.id !== id);
+          if (isSupabaseConfigured && supabase) {
+            supabase.from('rooms').delete().eq('id', id).then();
+          }
+          return { rooms: updated };
+        });
+      },
+
+      toggleRoomAvailability: (id) => {
+        set((state) => {
+          const updated = state.rooms.map((room) =>
+            room.id === id ? { ...room, is_available: !room.is_available } : room
+          );
+          const target = updated.find((r) => r.id === id);
+          if (target && isSupabaseConfigured && supabase) {
+            supabase.from('rooms').update({ is_available: target.is_available }).eq('id', id).then();
+          }
+          return { rooms: updated };
+        });
+      },
+
+      addService: (serviceData) => {
+        const newService: Service = {
+          ...serviceData,
+          id: `serv-${Date.now()}`,
+        };
+        set((state) => {
+          const updated = [newService, ...state.services];
+          if (isSupabaseConfigured && supabase) {
+            supabase.from('services').insert(newService).then();
+          }
+          return { services: updated };
+        });
+      },
+
+      updateService: (id, serviceData) => {
+        set((state) => {
+          const updated = state.services.map((service) =>
+            service.id === id ? { ...service, ...serviceData } : service
+          );
+          if (isSupabaseConfigured && supabase) {
+            supabase.from('services').update(serviceData).eq('id', id).then();
+          }
+          return { services: updated };
+        });
+      },
+
+      deleteService: (id) => {
+        set((state) => {
+          const updated = state.services.filter((service) => service.id !== id);
+          if (isSupabaseConfigured && supabase) {
+            supabase.from('services').delete().eq('id', id).then();
+          }
+          return { services: updated };
+        });
+      },
+
+      toggleServiceVisibility: (id) => {
+        set((state) => {
+          const updated = state.services.map((service) =>
+            service.id === id ? { ...service, is_visible: !service.is_visible } : service
+          );
+          const target = updated.find((s) => s.id === id);
+          if (target && isSupabaseConfigured && supabase) {
+            supabase.from('services').update({ is_visible: target.is_visible }).eq('id', id).then();
+          }
+          return { services: updated };
+        });
+      },
+
+      addMediaItem: (itemData) => {
+        const newItem: MediaItem = {
+          ...itemData,
+          id: `med-${Date.now()}`,
+          created_at: new Date().toISOString(),
+        };
+        set((state) => {
+          const updated = [newItem, ...state.media];
+          if (isSupabaseConfigured && supabase) {
+            supabase.from('media').insert(newItem).then();
+          }
+          return { media: updated };
+        });
+      },
+
+      deleteMediaItem: (id) => {
+        set((state) => {
+          const updated = state.media.filter((item) => item.id !== id);
+          if (isSupabaseConfigured && supabase) {
+            supabase.from('media').delete().eq('id', id).then();
+          }
+          return { media: updated };
+        });
+      },
+
+      addBooking: (bookingData) => {
+        const refSuffix = Math.floor(1000 + Math.random() * 9000);
+        const newBooking: Booking = {
+          ...bookingData,
+          id: `bkg-${Date.now()}`,
+          reference_no: `BBR-${refSuffix}`,
+          status: 'new',
+          created_at: new Date().toISOString(),
+        };
+        set((state) => {
+          const updated = [newBooking, ...state.bookings];
+          if (isSupabaseConfigured && supabase) {
+            supabase.from('bookings').insert(newBooking).then();
+          }
+          return { bookings: updated };
+        });
+        return newBooking;
+      },
+
+      updateBookingStatus: (id, status) => {
+        set((state) => {
+          const updated = state.bookings.map((booking) =>
+            booking.id === id ? { ...booking, status } : booking
+          );
+          if (isSupabaseConfigured && supabase) {
+            supabase.from('bookings').update({ status }).eq('id', id).then();
+          }
+          return { bookings: updated };
+        });
+      },
+
+      loginAdmin: async (email, password) => {
+        if (isSupabaseConfigured && supabase) {
+          try {
+            const { data, error } = await supabase.auth.signInWithPassword({
+              email,
+              password,
+            });
+            if (error) throw error;
+            if (data.user) {
+              set({
+                isAdminAuthenticated: true,
+                adminUser: {
+                  id: data.user.id,
+                  email: data.user.email || email,
+                  name: data.user.user_metadata?.name || 'Administrator',
+                  role: 'admin',
+                },
+              });
+              return { success: true };
+            }
+          } catch (err: any) {
+            return { success: false, error: err.message || 'Supabase authentication failed' };
+          }
+        }
+
+        // Demo / Built-in Admin Access fallback
+        if (
+          (email.toLowerCase() === 'admin@bluebellresort.com' || email.toLowerCase() === 'admin@hotel.com' || email.toLowerCase() === 'admin') &&
+          (password === 'bluebell2026' || password === 'admin123' || password === 'admin')
+        ) {
+          set({
+            isAdminAuthenticated: true,
+            adminUser: {
+              id: 'admin-master',
+              email: 'admin@bluebellresort.com',
+              name: 'Resort General Manager',
+              role: 'super_admin',
+            },
+          });
+          return { success: true };
+        }
+
+        return { success: false, error: 'Invalid admin credentials. Use admin@bluebellresort.com / bluebell2026' };
+      },
+
+      logoutAdmin: () => {
+        if (isSupabaseConfigured && supabase) {
+          supabase.auth.signOut().then();
+        }
+        set({
+          isAdminAuthenticated: false,
+          adminUser: null,
+        });
+      },
+
+      setLanguage: (lang) => {
+        set({ language: lang });
+      },
+
+      openBookingModal: (params) => {
+        set({
+          bookingModal: {
+            isOpen: true,
+            ...params,
+          },
+        });
+      },
+
+      closeBookingModal: () => {
+        set((state) => ({
+          bookingModal: {
+            ...state.bookingModal,
+            isOpen: false,
+          },
+        }));
+      },
+
+      resetToDefaults: () => {
+        set({
+          siteSettings: initialSiteSettings,
+          rooms: initialRooms,
+          services: initialServices,
+          media: initialMedia,
+          testimonials: initialTestimonials,
+          bookings: initialBookings,
+        });
+      },
+
+      syncWithSupabase: async () => {
+        if (!isSupabaseConfigured || !supabase) return;
+        try {
+          const [settingsRes, roomsRes, servicesRes, mediaRes, bookingsRes] = await Promise.all([
+            supabase.from('site_settings').select('*').single(),
+            supabase.from('rooms').select('*').order('created_at', { ascending: false }),
+            supabase.from('services').select('*'),
+            supabase.from('media').select('*').order('created_at', { ascending: false }),
+            supabase.from('bookings').select('*').order('created_at', { ascending: false }),
+          ]);
+
+          if (settingsRes.data) set({ siteSettings: settingsRes.data });
+          if (roomsRes.data && roomsRes.data.length > 0) set({ rooms: roomsRes.data });
+          if (servicesRes.data && servicesRes.data.length > 0) set({ services: servicesRes.data });
+          if (mediaRes.data && mediaRes.data.length > 0) set({ media: mediaRes.data });
+          if (bookingsRes.data && bookingsRes.data.length > 0) set({ bookings: bookingsRes.data });
+        } catch (e) {
+          console.warn('Supabase initial fetch fallback to local store:', e);
+        }
       },
     }),
     {
-      name: 'carnival-mart-storage-v3',
+      name: 'bluebell_resort_store_v4',
       storage: createJSONStorage(() => localStorage),
-      partialize: (state) => ({
-        language: state.language,
-        products: state.products,
-        orders: state.orders,
-        corporateQuotes: state.corporateQuotes,
-        cart: state.cart,
-        wishlist: state.wishlist,
-        recentSearches: state.recentSearches,
-        searchAnalytics: state.searchAnalytics,
-        failedSearches: state.failedSearches,
-      }),
     }
   )
 );

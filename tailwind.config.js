@@ -9,31 +9,44 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        brand: {
-          50: '#f0fdf4',
-          100: '#dcfce7',
-          200: '#bbf7d0',
-          300: '#86efac',
-          400: '#4ade80',
-          500: '#22c55e',
-          600: '#16a34a', // Primary Carnival Green
-          700: '#15803d',
-          800: '#166534',
-          900: '#14532d',
-          950: '#052e16',
+        resort: {
+          primary: '#0B3C8C', // Deep Blue
+          primaryLight: '#1B4F9B',
+          primaryDark: '#072559',
+          navy: '#061838',
+          gold: '#C5A880',
+          goldLight: '#DFCCAB',
+          goldDark: '#9C7A4A',
+          sand: '#FAF7F2',
+          sandDark: '#F3EFE6',
+          sandMuted: '#EAE4D9',
+          cream: '#FCFAF7',
+          charcoal: '#1A202C',
+          muted: '#6B7280',
+          accent: '#D4AF37',
         },
-        carnival: {
-          primary: '#16a34a',
-          dark: '#0f172a',
-          charcoal: '#1e293b',
-          muted: '#64748b',
-          light: '#f8fafc',
-          border: '#e2e8f0',
-          accent: '#ea580c',
-          blue: '#0284c7',
-        }
+        brand: {
+          50: '#f0f5ff',
+          100: '#e5edff',
+          200: '#cddbfe',
+          300: '#b4c6fd',
+          400: '#7e9bfb',
+          500: '#3b6cf6',
+          600: '#0B3C8C', // Blue Bell Primary
+          700: '#093275',
+          800: '#072559',
+          900: '#061838',
+          950: '#030c1d',
+        },
       },
       fontFamily: {
+        serif: [
+          'Playfair Display',
+          'Cormorant Garamond',
+          'Georgia',
+          'Cambria',
+          'serif',
+        ],
         sans: [
           'Inter',
           '-apple-system',
@@ -50,25 +63,21 @@ module.exports = {
           '"Noto Sans Bengali"',
           'sans-serif',
         ],
-        display: [
-          'Inter',
-          '-apple-system',
-          'sans-serif',
-        ],
       },
       boxShadow: {
-        subtle: '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
-        card: '0 1px 3px 0 rgba(0, 0, 0, 0.07), 0 1px 2px -1px rgba(0, 0, 0, 0.05)',
-        'card-hover': '0 10px 25px -5px rgba(0, 0, 0, 0.06), 0 8px 10px -6px rgba(0, 0, 0, 0.04)',
-        elevated: '0 20px 25px -5px rgba(0, 0, 0, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.04)',
+        subtle: '0 1px 3px 0 rgba(11, 60, 140, 0.05)',
+        card: '0 4px 20px -2px rgba(11, 60, 140, 0.06), 0 2px 6px -1px rgba(0, 0, 0, 0.03)',
+        'card-hover': '0 20px 35px -5px rgba(11, 60, 140, 0.12), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
+        elevated: '0 25px 50px -12px rgba(11, 60, 140, 0.25)',
+        gold: '0 4px 20px -2px rgba(197, 168, 128, 0.35)',
       },
       borderRadius: {
         'xs': '4px',
         'sm': '6px',
-        'md': '8px',
-        'lg': '10px',
-        'xl': '14px',
-        '2xl': '18px',
+        'md': '10px',
+        'lg': '14px',
+        'xl': '20px',
+        '2xl': '28px',
       }
     },
   },

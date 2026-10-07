@@ -1,144 +1,147 @@
-export type Language = 'bn' | 'en';
+export type CurrencyCode = 'BDT' | 'USD' | 'EUR' | 'GBP';
 
-export interface Category {
+export interface SiteSettings {
+  hotel_name: string;
+  tagline: string;
+  logo_url: string;
+  favicon_url: string;
+  currency: string;
+  currency_symbol: string;
+  phone: string;
+  whatsapp: string;
+  email: string;
+  address: string;
+  latitude: number;
+  longitude: number;
+  google_maps_link: string;
+  google_maps_embed_key?: string;
+  region: string;
+  check_in_time: string;
+  check_out_time: string;
+  hero_slides: HeroSlide[];
+  social_links: {
+    facebook?: string;
+    instagram?: string;
+    tripadvisor?: string;
+    youtube?: string;
+    linkedin?: string;
+  };
+  brand_colors: {
+    primary: string;
+    gold: string;
+    sand: string;
+  };
+}
+
+export interface HeroSlide {
+  id: string;
+  title: string;
+  subtitle: string;
+  image_url: string;
+  video_url?: string;
+  cta_text?: string;
+  cta_link?: string;
+}
+
+export interface Room {
   id: string;
   slug: string;
-  name_en: string;
-  name_bn: string;
-  description_en: string;
-  description_bn: string;
-  icon: string;
-  image?: string;
-  productCount: number;
-  featured?: boolean;
-  subcategories?: {
-    id: string;
-    slug: string;
-    name_en: string;
-    name_bn: string;
-  }[];
-}
-
-export interface ProductVariant {
-  id: string;
-  size: string;
-  unit: string;
-  price: number;
-  sale_price?: number;
-  sku: string;
-  stock: number;
-}
-
-export interface Product {
-  id: string;
-  sku: string;
-  name_en: string;
-  name_bn: string;
-  slug_en: string;
-  slug_bn: string;
-  brand: string;
-  category_id: string;
-  category_en: string;
-  category_bn: string;
-  subcategory_id?: string;
-  subcategory_en?: string;
-  subcategory_bn?: string;
-  description_en: string;
-  description_bn: string;
-  features_en: string[];
-  features_bn: string[];
-  how_to_use_en?: string;
-  how_to_use_bn?: string;
-  specifications: { [key: string]: string };
-  price: number;
-  sale_price?: number;
-  currency: string;
-  size: string;
-  unit: string;
-  variants?: ProductVariant[];
+  name: string;
+  type: string;
+  tag?: string;
+  short_description: string;
+  description: string;
+  price_per_night: number;
+  original_price?: number;
+  capacity_adults: number;
+  capacity_children: number;
+  bed_type: string;
+  room_size: string;
+  view: string;
+  amenities: string[];
+  is_featured: boolean;
+  is_available: boolean;
+  cover_image: string;
   images: string[];
-  stock: number;
-  featured: boolean;
-  popular: boolean;
-  new?: boolean;
-  offer?: boolean;
-  offer_tag_en?: string;
-  offer_tag_bn?: string;
-  tags: string[];
+  video_url?: string;
   rating: number;
   review_count: number;
-  keywords_en: string[];
-  keywords_bn: string[];
-  search_aliases: string[];
   created_at?: string;
-  updated_at?: string;
 }
 
-export interface CartItem {
-  product: Product;
-  selectedVariant?: ProductVariant;
-  quantity: number;
-}
+export type ServicePriceUnit = 'per_hour' | 'per_day' | 'fixed' | 'per_person' | 'custom';
 
-export interface OrderItem {
-  productId: string;
+export interface Service {
+  id: string;
   name: string;
-  size: string;
+  slug: string;
+  category: 'car_rental' | 'airport_pickup' | 'restaurant' | 'event_hall' | 'guided_tours' | 'spa' | 'laundry' | 'other';
+  short_description: string;
+  description: string;
   price: number;
-  quantity: number;
-  total: number;
-  image: string;
+  price_unit: ServicePriceUnit;
+  hourly_rate?: number;
+  daily_rate?: number;
+  image_url: string;
+  icon_name: string;
+  is_visible: boolean;
+  featured: boolean;
+  features: string[];
 }
 
-export interface Order {
+export type BookingStatus = 'new' | 'confirmed' | 'cancelled';
+export type BookingType = 'room' | 'service';
+
+export interface Booking {
   id: string;
-  orderNumber: string;
-  date: string;
-  customerName: string;
-  phone: string;
-  email?: string;
-  address: string;
-  district: string;
-  area: string;
-  notes?: string;
-  items: OrderItem[];
-  subtotal: number;
-  deliveryFee: number;
-  discount: number;
-  total: number;
-  paymentMethod: 'cod' | 'bkash' | 'nagad' | 'card';
-  status: 'placed' | 'confirmed' | 'processing' | 'shipped' | 'out_for_delivery' | 'delivered';
-  timeline: {
-    status: string;
-    title_en: string;
-    title_bn: string;
-    time: string;
-    completed: boolean;
-    current?: boolean;
-  }[];
+  reference_no: string;
+  type: BookingType;
+  item_id: string;
+  item_name: string;
+  guest_name: string;
+  guest_email: string;
+  guest_phone: string;
+  check_in?: string;
+  check_out?: string;
+  guests_count?: number;
+  service_date?: string;
+  service_duration?: string;
+  service_rate_type?: 'hourly' | 'daily' | 'fixed';
+  total_amount: number;
+  status: BookingStatus;
+  special_requests?: string;
+  created_at: string;
 }
 
-export interface FilterState {
-  category: string;
-  brand: string[];
-  priceRange: [number, number];
-  size: string[];
-  inStockOnly: boolean;
-  onSaleOnly: boolean;
-  searchQuery: string;
-  sortBy: 'recommended' | 'price-low' | 'price-high' | 'newest' | 'popular' | 'discount';
+export interface MediaItem {
+  id: string;
+  title: string;
+  url: string;
+  type: 'image' | 'video';
+  category: 'rooms' | 'services' | 'resort' | 'dining' | 'events' | 'surroundings';
+  size_bytes?: number;
+  created_at: string;
 }
 
-export interface CorporateQuote {
+export interface AdminUser {
+  id: string;
+  email: string;
+  name: string;
+  role: 'admin' | 'super_admin';
+}
+
+export interface Testimonial {
   id: string;
   name: string;
-  company: string;
-  phone: string;
-  email?: string;
-  sector: string;
-  frequency?: string;
-  requirements: string;
-  date: string;
-  status: 'new' | 'contacted' | 'quoted' | 'closed';
+  name_bn?: string;
+  location: string;
+  location_bn?: string;
+  avatar?: string;
+  rating: number;
+  comment: string;
+  comment_bn?: string;
+  stay_date: string;
+  stay_date_bn?: string;
+  room_stayed: string;
+  room_stayed_bn?: string;
 }
-
