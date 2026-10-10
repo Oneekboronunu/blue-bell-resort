@@ -8,6 +8,7 @@ import { useTranslation } from '@/lib/i18n/translations';
 import { formatPrice } from '@/lib/formatters';
 import { BluebellDivider, BluebellFlowerIcon } from '@/components/common/BluebellMotif';
 import DynamicGoogleMap from '@/components/common/DynamicGoogleMap';
+import FacebookCommunitySection from '@/components/common/FacebookCommunitySection';
 import { 
   Sparkles, 
   Calendar, 
@@ -745,7 +746,10 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 6. DYNAMIC GOOGLE MAP & LOCATION */}
+      {/* 6. OFFICIAL FACEBOOK COMMUNITY & SOCIAL FEED */}
+      <FacebookCommunitySection />
+
+      {/* 7. DYNAMIC GOOGLE MAP & LOCATION */}
       <section className="max-w-7xl mx-auto px-6">
         <div className="text-center max-w-3xl mx-auto space-y-3 mb-10">
           <span className="text-xs font-bold uppercase tracking-[0.25em] text-resort-goldDark">

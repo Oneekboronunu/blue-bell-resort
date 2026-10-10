@@ -4,6 +4,7 @@ import React from 'react';
 import Link from 'next/link';
 import { useStore } from '@/lib/store/useStore';
 import { BluebellDivider, BluebellFlowerIcon } from '@/components/common/BluebellMotif';
+import FacebookCommunitySection from '@/components/common/FacebookCommunitySection';
 import { ShieldCheck, Award, HeartHandshake, Sparkles, Car, Users } from 'lucide-react';
 
 export default function AboutPage() {
@@ -107,6 +108,9 @@ export default function AboutPage() {
         </div>
 
       </div>
+
+      {/* Official Facebook Community Section */}
+      <FacebookCommunitySection />
 
     </div>
   );
