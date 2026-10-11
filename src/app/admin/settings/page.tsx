@@ -188,6 +188,23 @@ export default function AdminSettingsPage() {
               </div>
             )}
           </div>
+
+          {/* Walkthrough Video URL (Streamable) */}
+          <div className="space-y-2 pt-2 border-t border-slate-100">
+            <label className="block text-xs font-semibold text-slate-700">
+              Resort Walkthrough Video URL (Streamable / MP4)
+            </label>
+            <input
+              type="text"
+              value={formData.walkthrough_video_url || ''}
+              onChange={(e) => handleChange('walkthrough_video_url', e.target.value)}
+              placeholder="https://streamable.com/hspl4w or https://streamable.com/e/hspl4w"
+              className="w-full text-xs p-3 rounded-xl border border-slate-300 focus:border-resort-gold focus:outline-none font-mono"
+            />
+            <p className="text-[11px] text-slate-500">
+              Paste your Streamable video link (e.g. <code>https://streamable.com/hspl4w</code>). It will automatically embed in high definition across the public site.
+            </p>
+          </div>
         </div>
 
         {/* 2. CONTACT CHANNELS */}

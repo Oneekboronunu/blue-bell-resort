@@ -9,6 +9,7 @@ import { formatPrice } from '@/lib/formatters';
 import { BluebellDivider, BluebellFlowerIcon } from '@/components/common/BluebellMotif';
 import DynamicGoogleMap from '@/components/common/DynamicGoogleMap';
 import FacebookCommunitySection from '@/components/common/FacebookCommunitySection';
+import ResortWalkthroughSection from '@/components/common/ResortWalkthroughSection';
 import { 
   Sparkles, 
   Calendar, 
@@ -173,6 +174,14 @@ export default function HomePage() {
             >
               {t.hero.viewAllSuites}
             </Link>
+
+            <a
+              href="#walkthrough"
+              className="px-6 py-3.5 bg-slate-900/60 hover:bg-slate-900/90 text-resort-goldLight hover:text-white font-semibold text-xs uppercase tracking-widest rounded-xl backdrop-blur-md border border-resort-gold/40 transition-all flex items-center gap-2 hover:scale-[1.03]"
+            >
+              <Play className="w-3.5 h-3.5 fill-resort-gold text-resort-gold" />
+              <span>Watch Walkthrough</span>
+            </a>
           </div>
         </div>
 
@@ -558,7 +567,12 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 5. GUEST TESTIMONIALS & BENGALI FEEDBACK CAROUSEL */}
+      {/* 5. CINEMATIC RESORT WALKTHROUGH VIDEO (STREAMABLE) */}
+      <div id="walkthrough">
+        <ResortWalkthroughSection />
+      </div>
+
+      {/* 6. GUEST TESTIMONIALS & BENGALI FEEDBACK CAROUSEL */}
       <section className="bg-resort-navy text-white py-20 px-6 relative overflow-hidden">
         {/* Decorative background flourishes */}
         <div className="absolute top-0 right-1/4 w-96 h-96 bg-resort-primary/30 rounded-full blur-3xl pointer-events-none" />

@@ -18,6 +18,7 @@ export interface SiteSettings {
   region: string;
   check_in_time: string;
   check_out_time: string;
+  walkthrough_video_url?: string;
   hero_slides: HeroSlide[];
   social_links: {
     facebook?: string;

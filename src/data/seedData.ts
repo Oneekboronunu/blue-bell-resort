@@ -18,6 +18,7 @@ export const initialSiteSettings: SiteSettings = {
   region: 'Chattogram, Bangladesh',
   check_in_time: '02:00 PM',
   check_out_time: '12:00 PM',
+  walkthrough_video_url: 'https://streamable.com/e/hspl4w',
   hero_slides: [
     {
       id: 'slide-1',
@@ -405,8 +406,8 @@ export const initialMedia: MediaItem[] = [
   },
   {
     id: 'med-9',
-    title: 'Resort Walkthrough Video',
-    url: 'https://assets.mixkit.co/videos/preview/mixkit-hotel-room-with-a-view-of-the-sea-42795-large.mp4',
+    title: 'Cinematic Resort Walkthrough Video (Live Streamable)',
+    url: 'https://streamable.com/e/hspl4w',
     type: 'video',
     category: 'resort',
     created_at: '2026-10-01T10:40:00Z',
