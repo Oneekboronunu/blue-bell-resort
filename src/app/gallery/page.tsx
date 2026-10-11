@@ -14,12 +14,26 @@ import {
   ChevronRight 
 } from 'lucide-react';
 
+function isWalkthroughVideo(item: { id?: string; title?: string; url?: string; category?: string; type?: string }) {
+  if (!item) return false;
+  const url = (item.url || '').toLowerCase();
+  const title = (item.title || '').toLowerCase();
+  return (
+    item.id === 'med-9' ||
+    title.includes('walkthrough') ||
+    url.includes('streamable.com') ||
+    url.includes('hspl4w') ||
+    (item.category === 'resort' && item.type === 'video')
+  );
+}
+
 function getStreamableEmbed(url: string) {
+  if (!url) return 'https://streamable.com/e/hspl4w?autoplay=1&muted=0&loop=1';
   const match = url.match(/streamable\.com\/(?:e\/)?([a-zA-Z0-9]+)/);
   if (match) {
     return `https://streamable.com/e/${match[1]}?autoplay=1&muted=0&loop=1`;
   }
-  return url;
+  return 'https://streamable.com/e/hspl4w?autoplay=1&muted=0&loop=1';
 }
 
 export default function GalleryPage() {
@@ -132,71 +146,75 @@ export default function GalleryPage() {
 
         {/* Gallery Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-6">
-          {filteredMedia.map((item, index) => (
-            <div
-              key={item.id}
-              onClick={() => setActiveLightboxIndex(index)}
-              className="group relative aspect-[4/3] rounded-2xl overflow-hidden bg-slate-900 border border-resort-gold/30 shadow-card cursor-pointer"
-            >
-              {item.type === 'video' ? (
-                item.url.includes('streamable.com') ? (
-                  <div className="w-full h-full relative bg-slate-950 flex items-center justify-center">
-                    <iframe
-                      src={`${getStreamableEmbed(item.url)}&autoplay=0&muted=1`}
-                      className="w-full h-full border-0 pointer-events-none opacity-80"
-                      title={item.title}
-                    />
-                    <div className="absolute inset-0 flex items-center justify-center bg-black/30 group-hover:bg-black/10 transition-colors">
-                      <div className="w-12 h-12 rounded-full bg-resort-primary/90 backdrop-blur-sm text-white flex items-center justify-center shadow-elevated group-hover:scale-110 transition-transform">
-                        <Play className="w-5 h-5 fill-resort-gold text-resort-gold ml-0.5" />
-                      </div>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="w-full h-full relative">
-                    <video
-                      src={item.url}
-                      className="w-full h-full object-cover opacity-80 group-hover:scale-105 transition-transform duration-700"
-                      muted
-                      loop
-                      playsInline
-                    />
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <div className="w-12 h-12 rounded-full bg-resort-primary/80 backdrop-blur-sm text-white flex items-center justify-center shadow-elevated group-hover:scale-110 transition-transform">
-                        <Play className="w-5 h-5 fill-resort-gold text-resort-gold ml-0.5" />
-                      </div>
-                    </div>
-                  </div>
-                )
-              ) : (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
-                  src={item.url}
-                  alt={item.title}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-                />
-              )}
+          {filteredMedia.map((item, index) => {
+            const isWalkthrough = isWalkthroughVideo(item);
 
-              {/* Overlay on hover */}
-              <div className="absolute inset-0 bg-gradient-to-t from-resort-navy/90 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity p-5 flex flex-col justify-end">
-                <span className="text-[10px] text-resort-goldLight font-bold uppercase tracking-wider">
-                  {item.category} • {item.type}
-                </span>
-                <h4 className="font-serif text-white font-bold text-base mt-1">
-                  {item.title}
-                </h4>
+            return (
+              <div
+                key={item.id}
+                onClick={() => setActiveLightboxIndex(index)}
+                className="group relative aspect-[4/3] rounded-2xl overflow-hidden bg-slate-900 border border-resort-gold/30 shadow-card cursor-pointer"
+              >
+                {item.type === 'video' ? (
+                  isWalkthrough ? (
+                    <div className="w-full h-full relative bg-slate-950 flex items-center justify-center">
+                      <iframe
+                        src="https://streamable.com/e/hspl4w?autoplay=0&muted=1"
+                        className="w-full h-full border-0 pointer-events-none opacity-80"
+                        title={item.title}
+                      />
+                      <div className="absolute inset-0 flex items-center justify-center bg-black/30 group-hover:bg-black/10 transition-colors">
+                        <div className="w-14 h-14 rounded-full bg-resort-gold text-resort-navy flex items-center justify-center shadow-elevated group-hover:scale-110 transition-transform">
+                          <Play className="w-6 h-6 fill-current ml-0.5" />
+                        </div>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="w-full h-full relative">
+                      <video
+                        src={item.url}
+                        className="w-full h-full object-cover opacity-80 group-hover:scale-105 transition-transform duration-700"
+                        muted
+                        loop
+                        playsInline
+                      />
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <div className="w-12 h-12 rounded-full bg-resort-primary/80 backdrop-blur-sm text-white flex items-center justify-center shadow-elevated group-hover:scale-110 transition-transform">
+                          <Play className="w-5 h-5 fill-resort-gold text-resort-gold ml-0.5" />
+                        </div>
+                      </div>
+                    </div>
+                  )
+                ) : (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={item.url}
+                    alt={item.title}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                  />
+                )}
+
+                {/* Overlay on hover */}
+                <div className="absolute inset-0 bg-gradient-to-t from-resort-navy/90 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity p-5 flex flex-col justify-end">
+                  <span className="text-[10px] text-resort-goldLight font-bold uppercase tracking-wider">
+                    {item.category} • {item.type}
+                  </span>
+                  <h4 className="font-serif text-white font-bold text-base mt-1">
+                    {item.title}
+                  </h4>
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
 
       {/* Lightbox Modal */}
       {activeItem && (
-        <div className="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-50 bg-black/95 backdrop-blur-md flex items-center justify-center p-4">
           <button
             onClick={() => setActiveLightboxIndex(null)}
-            className="absolute top-6 right-6 z-20 text-white/80 hover:text-white p-2 rounded-full bg-white/10 hover:bg-white/20"
+            className="absolute top-6 right-6 z-20 text-white/80 hover:text-white p-2.5 rounded-full bg-white/10 hover:bg-white/20 transition-colors"
             aria-label="Close Lightbox"
           >
             <X className="w-6 h-6" />
@@ -210,7 +228,7 @@ export default function GalleryPage() {
                   e.stopPropagation();
                   setActiveLightboxIndex((prev) => (prev! - 1 + filteredMedia.length) % filteredMedia.length);
                 }}
-                className="absolute left-6 top-1/2 -translate-y-1/2 z-20 text-white/80 hover:text-white p-3 rounded-full bg-white/10 hover:bg-white/20"
+                className="absolute left-4 sm:left-6 top-1/2 -translate-y-1/2 z-20 text-white/80 hover:text-white p-3 rounded-full bg-white/10 hover:bg-white/20 transition-colors"
               >
                 <ChevronLeft className="w-6 h-6" />
               </button>
@@ -219,19 +237,19 @@ export default function GalleryPage() {
                   e.stopPropagation();
                   setActiveLightboxIndex((prev) => (prev! + 1) % filteredMedia.length);
                 }}
-                className="absolute right-6 top-1/2 -translate-y-1/2 z-20 text-white/80 hover:text-white p-3 rounded-full bg-white/10 hover:bg-white/20"
+                className="absolute right-4 sm:right-6 top-1/2 -translate-y-1/2 z-20 text-white/80 hover:text-white p-3 rounded-full bg-white/10 hover:bg-white/20 transition-colors"
               >
                 <ChevronRight className="w-6 h-6" />
               </button>
             </>
           )}
 
-          <div className="relative max-w-5xl max-h-[85vh] w-full flex flex-col items-center">
+          <div className="relative max-w-5xl w-full flex flex-col items-center">
             {activeItem.type === 'video' ? (
-              activeItem.url.includes('streamable.com') ? (
-                <div className="w-full aspect-video max-h-[75vh] rounded-2xl overflow-hidden shadow-2xl border border-resort-gold/40">
+              isWalkthroughVideo(activeItem) ? (
+                <div className="w-full aspect-video rounded-2xl overflow-hidden shadow-2xl border-2 border-resort-gold/50 bg-black">
                   <iframe
-                    src={getStreamableEmbed(activeItem.url)}
+                    src="https://streamable.com/e/hspl4w?autoplay=1&muted=0&loop=1"
                     className="w-full h-full border-0"
                     allow="autoplay; fullscreen"
                     allowFullScreen
@@ -254,14 +272,32 @@ export default function GalleryPage() {
                 className="max-h-[75vh] w-auto object-contain rounded-xl shadow-2xl"
               />
             )}
-            <div className="text-center text-white mt-4 space-y-1">
-              <h3 className="font-serif text-xl font-bold">{activeItem.title}</h3>
-              <p className="text-xs text-slate-400 capitalize">{activeItem.category} Collection</p>
+
+            <div className="text-center text-white mt-5 space-y-2">
+              <h3 className="font-serif text-2xl font-bold text-white tracking-wide">
+                {activeItem.title}
+              </h3>
+              <p className="text-xs text-resort-goldLight uppercase tracking-wider font-semibold">
+                {activeItem.category} Collection • Streamable 1080p Video
+              </p>
+
+              {isWalkthroughVideo(activeItem) && (
+                <div className="pt-2">
+                  <a
+                    href="https://streamable.com/hspl4w"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 px-4 py-1.5 bg-white/10 hover:bg-resort-gold hover:text-resort-navy text-xs font-semibold rounded-lg transition-colors border border-white/20"
+                  >
+                    <span>Open in Streamable</span>
+                    <Play className="w-3 h-3 fill-current" />
+                  </a>
+                </div>
+              )}
             </div>
           </div>
         </div>
       )}
-
     </div>
   );
 }

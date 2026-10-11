@@ -340,12 +340,22 @@ export default function RoomDetailPage() {
             >
               <X className="w-6 h-6" />
             </button>
-            <video
-              src={room.video_url}
-              controls
-              autoPlay
-              className="w-full aspect-video"
-            />
+            {room.video_url.includes('streamable.com') ? (
+              <iframe
+                src={`https://streamable.com/e/${room.video_url.match(/streamable\.com\/(?:e\/)?([a-zA-Z0-9]+)/)?.[1] || 'hspl4w'}?autoplay=1&muted=0&loop=1`}
+                className="w-full aspect-video border-0"
+                allow="autoplay; fullscreen"
+                allowFullScreen
+                title="Room Video Tour"
+              />
+            ) : (
+              <video
+                src={room.video_url}
+                controls
+                autoPlay
+                className="w-full aspect-video"
+              />
+            )}
           </div>
         </div>
       )}

@@ -378,7 +378,7 @@ export const useStore = create<ResortState>()(
       },
     }),
     {
-      name: 'bluebell_resort_store_v4',
+      name: 'bluebell_resort_store_v6',
       storage: createJSONStorage(() => localStorage),
     }
   )
